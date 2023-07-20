@@ -40,7 +40,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Navigation(navHostController: NavHostController) {
-    NavHost(navController = navHostController, startDestination = Screens.SplashScreen.route) {
+    NavHost(navController = navHostController, startDestination = Screens.InitialScreen.route) {
         composable(
             route = Screens.SplashScreen.route
         ) {
@@ -52,10 +52,10 @@ fun Navigation(navHostController: NavHostController) {
             HomeScreen(navHostController)
         }
         composable(
-            route = Screens.QuizScreen.route
+            route = "${Screens.QuizScreen.route}/{nameUser}"
         ) {
-            QuizScreen(navHostController)
+            val nameUser = it.arguments?.getString("nameUser")
+            QuizScreen(navHostController, userName = nameUser)
         }
-
     }
 }

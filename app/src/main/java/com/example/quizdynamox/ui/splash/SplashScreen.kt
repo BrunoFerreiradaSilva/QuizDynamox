@@ -2,8 +2,6 @@ package com.example.quizdynamox.ui.splash
 
 import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
@@ -16,9 +14,7 @@ fun SplashScreen(navHostController: NavHostController) {
 
     splashViewModel.viewModelScope.launch {
         splashViewModel.uiState.collect {
-            it.rote?.let { rote ->
-                navHostController.navigate(rote)
-            }
+            navHostController.navigate(it.rote)
         }
     }
 

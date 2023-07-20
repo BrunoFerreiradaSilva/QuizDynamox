@@ -50,8 +50,8 @@ fun HomeScreen(navHostController: NavHostController) {
             maxLines = 1
         )
         ButtonComponent(labelText = "Start Quiz", isLoading) {
-            homeViewModel.insertPlayer(nameUser.value.text)
-            navHostController.navigate(Screens.QuizScreen.route)
+            //homeViewModel.insertPlayer(nameUser.value.text)
+            navHostController.navigate("${Screens.QuizScreen.route}/${nameUser.value.text}")
         }
     }
 

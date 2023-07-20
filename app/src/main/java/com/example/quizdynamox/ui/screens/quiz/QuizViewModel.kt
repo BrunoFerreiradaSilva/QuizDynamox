@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.quizdynamox.data.repository.player.PlayerRepository
 import com.example.quizdynamox.data.repository.quiz.QuizRepository
 import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.Answer
@@ -22,12 +23,16 @@ data class QuizUiData(
 )
 
 @HiltViewModel
-class QuizViewModel @Inject constructor(private val repository: QuizRepository) : ViewModel() {
+class QuizViewModel @Inject constructor(
+    private val repository: QuizRepository,
+    private val playerRepository: PlayerRepository
+) : ViewModel() {
 
     private val _uiState: MutableStateFlow<QuizUiData> =
         MutableStateFlow(QuizUiData())
 
     val uiState = _uiState.asStateFlow()
+    private var count = 0
 
     init {
         viewModelScope.launch {
@@ -62,6 +67,12 @@ class QuizViewModel @Inject constructor(private val repository: QuizRepository) 
         isFinish: (Boolean) -> Unit
     ) {
         isFinish(_uiState.value.quiz?.maxQuestions == count.value)
+        return
+    }
+
+    fun correctAnswer(): Int {
+        count++
+        return count / 2
     }
 
     fun sendQuestion(idQuestion: Int, answer: Answer) {
@@ -76,6 +87,7 @@ class QuizViewModel @Inject constructor(private val repository: QuizRepository) 
             is DataState.Data -> {
                 val quiz = _uiState.value.quiz
                 _uiState.value = QuizUiData(quiz = quiz, result = state.data)
+
             }
 
             is DataState.Error -> {}
@@ -83,7 +95,7 @@ class QuizViewModel @Inject constructor(private val repository: QuizRepository) 
         }
     }
 
-    fun getResultQuestion(): ResponseResult? {
+    fun getResult(): ResponseResult? {
         var responseResult: ResponseResult? = null
         _uiState.value.result?.let {
             responseResult = if (it.result) {
