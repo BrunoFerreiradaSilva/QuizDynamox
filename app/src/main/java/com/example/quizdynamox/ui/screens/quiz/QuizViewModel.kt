@@ -63,7 +63,6 @@ class QuizViewModel @Inject constructor(private val repository: QuizRepository) 
         isFinish: (Boolean) -> Unit
     ) {
         isFinish(question.maxQuestions == count.value)
-        count.value += 1
     }
 
     fun sendQuestion(idQuestion: Int, answer: Answer) {

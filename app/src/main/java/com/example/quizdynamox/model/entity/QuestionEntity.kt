@@ -1,6 +1,5 @@
 package com.example.quizdynamox.model.entity
 
-import android.text.style.BackgroundColorSpan
 import androidx.compose.ui.graphics.Color
 
 data class QuestionEntity(
@@ -8,7 +7,7 @@ data class QuestionEntity(
     val statement: String,
     val options: List<String>,
     val isFinishGame:Boolean = false,
-    val maxQuestions:Int = 9
+    val maxQuestions:Int = 10
 )
 
 data class Answer(

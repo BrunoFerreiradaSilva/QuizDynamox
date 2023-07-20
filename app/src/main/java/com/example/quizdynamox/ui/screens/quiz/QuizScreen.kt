@@ -30,7 +30,7 @@ import com.example.quizdynamox.ui.components.ResponseQuestionComponent
 fun QuizScreen(navHostController: NavHostController, nameUser: String?) {
     val quizViewModel = hiltViewModel<QuizViewModel>()
     val questionState by quizViewModel.uiState.collectAsState()
-    val count = remember { mutableStateOf(0) }
+    val count = remember { mutableStateOf(1) }
     val finishGame = remember { mutableStateOf(false) }
     val isLoading = remember { mutableStateOf(false) }
 
@@ -52,7 +52,7 @@ fun QuizScreen(navHostController: NavHostController, nameUser: String?) {
                     isLoading = isLoading
                 )
             } else {
-                GameScreen(it, isLoading, quizViewModel, questionState)
+                GameScreen(it, isLoading, quizViewModel, questionState, count)
             }
         }
 
@@ -66,6 +66,7 @@ private fun GameScreen(
     isLoading: MutableState<Boolean>,
     quizViewModel: QuizViewModel,
     questionState: QuizUiData,
+    count: MutableState<Int>,
 
     ) {
     val selectedValue = remember { mutableStateOf("") }
@@ -107,6 +108,7 @@ private fun GameScreen(
         ButtonComponent(labelText = "Next answer", isLoading) {
             quizViewModel.getNextQuestion()
             enableRadio.value = true
+            count.value += 1
         }
     } ?: run {
 
@@ -127,6 +129,7 @@ private fun FinishScreen(
     nameUser?.let {
         Text(text = nameUser)
     }
+    isLoading.value = false
     Text(text = "Sua Pontuação foi de ${result.value}")
     Spacer(modifier = Modifier.padding(vertical = 10.dp))
     ButtonComponent(labelText = "Jogar Denovo", isLoading) {
