@@ -14,6 +14,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.screens.InitialScreen
+import com.example.quizdynamox.ui.screens.QuizScreen
 import com.example.quizdynamox.ui.theme.QuizDynamoxTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,6 +42,12 @@ fun Navigation(navHostController: NavHostController) {
             route = Screens.InitialScreen.route
         ) {
             InitialScreen(navHostController)
+        }
+        composable(
+            route = "${Screens.QuizScreen.route}/{nameUser}"
+        ) {
+            val nameUser = it.arguments?.getString("nameUser")
+            QuizScreen(navHostController, nameUser = nameUser)
         }
 
     }

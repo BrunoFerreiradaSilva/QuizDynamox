@@ -5,8 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.MaterialTheme
@@ -20,10 +18,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.quizdynamox.navigation.Screens
+import com.example.quizdynamox.ui.components.ButtonComponent
 
 @Composable
-fun InitialScreen(navigation: NavHostController?) {
+fun InitialScreen(navHostController: NavHostController) {
     val nameUser = remember { mutableStateOf(TextFieldValue()) }
+    val isloading = remember {
+        mutableStateOf(false)
+    }
 
     Column(
         Modifier
@@ -41,20 +44,12 @@ fun InitialScreen(navigation: NavHostController?) {
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.primary
-            )
-        )
-        Button(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(vertical = 16.dp),
-            onClick = {},
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.surface
             ),
-            shape = ShapeDefaults.Small
-        ) {
-            Text(text = "Start Quiz", color = MaterialTheme.colorScheme.surface)
+            maxLines = 1
+        )
+        ButtonComponent(labelText = "Start Quiz", isloading) {
+            navHostController.navigate("${Screens.QuizScreen.route}/${nameUser.value.text}")
         }
     }
+
 }
