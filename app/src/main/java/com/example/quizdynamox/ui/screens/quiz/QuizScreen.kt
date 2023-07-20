@@ -1,4 +1,4 @@
-package com.example.quizdynamox.ui.screens
+package com.example.quizdynamox.ui.screens.quiz
 
 import android.app.Activity
 import android.widget.Toast
@@ -13,12 +13,15 @@ import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.quizdynamox.Question
 import com.example.quizdynamox.getQuestions
@@ -32,7 +35,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun QuizScreen(navHostController: NavHostController, nameUser: String?) {
-    val mock = remember { mutableStateOf(getQuestions(0)) }
+    val quizViewModel = hiltViewModel<QuizViewModel>()
+    val questionState by quizViewModel.uiState.collectAsState()
+
     val result = remember { mutableStateOf(0) }
     val isLoading = remember {
         mutableStateOf(false)
@@ -43,62 +48,69 @@ fun QuizScreen(navHostController: NavHostController, nameUser: String?) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (mock.value.isFinalQuestion) {
-            FinishScreen(nameUser, result, navHostController, isLoading)
-        } else {
-            GameScreen(mock, result, isLoading)
+        when (questionState) {
+            QuizUiState.Error -> {}
+            QuizUiState.Loading -> {}
+            is QuizUiState.Success -> {
+                val question = (questionState as QuizUiState.Success).question
+
+                question?.let {
+                    if (it.isFinalQuestion) {
+                        FinishScreen(nameUser, result, navHostController, isLoading)
+                    } else {
+                        GameScreen(it, result, isLoading)
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
 private fun GameScreen(
-    mock: MutableState<Question>,
+    question: Question?,
     result: MutableState<Int>,
     isLoading: MutableState<Boolean>
 ) {
     val selectedValue = remember { mutableStateOf("") }
-    val context = LocalContext.current as Activity
+
     val coroutineScope = CoroutineScope(Dispatchers.IO + Job())
     val count = remember { mutableStateOf(0) }
     val isResultOk = remember { mutableStateOf(false) }
 
+    question?.let {
+        Text(text = it.statement, modifier = Modifier.padding(horizontal = 16.dp))
+        Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
-    Text(text = mock.value.statement)
-    Spacer(modifier = Modifier.padding(vertical = 10.dp))
-
-    mock.value.options.forEach { value ->
-        Row() {
-            RadioButton(
-                selected = selectedValue.value == value,
-                onClick = { selectedValue.value = value },
-            )
-            Text(
-                text = value,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically)
-            )
+        it.options.forEach { value ->
+            Row() {
+                RadioButton(
+                    selected = selectedValue.value == value,
+                    onClick = { selectedValue.value = value },
+                )
+                Text(
+                    text = value,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.CenterVertically)
+                )
+            }
+            isResultOk.value = it.response == selectedValue.value
         }
-        isResultOk.value = mock.value.response == selectedValue.value
-    }
 
-    Spacer(modifier = Modifier.padding(vertical = 10.dp))
-    ButtonComponent(labelText = "Next Question", isLoading) {
+        Spacer(modifier = Modifier.padding(vertical = 10.dp))
+        ButtonComponent(labelText = "Next Question", isLoading) {
+            count.value += 1
 
-        count.value += 1
-        if (isResultOk.value) {
-            result.value += 1
-            Toast.makeText(context, "Reposta Correta", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "Reposta Errada", Toast.LENGTH_SHORT).show()
-        }
-        coroutineScope.launch {
-            delay(1500)
-            mock.value = getQuestions(count.value)
-            isLoading.value = false
+            coroutineScope.launch {
+                delay(1500)
+
+                isLoading.value = false
+            }
         }
     }
+
+
 }
 
 @Composable

@@ -14,9 +14,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.screens.InitialScreen
-import com.example.quizdynamox.ui.screens.QuizScreen
+import com.example.quizdynamox.ui.screens.quiz.QuizScreen
 import com.example.quizdynamox.ui.theme.QuizDynamoxTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
