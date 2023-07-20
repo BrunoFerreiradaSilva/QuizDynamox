@@ -20,90 +20,101 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import com.example.quizdynamox.model.entity.Answer
 import com.example.quizdynamox.model.entity.QuestionEntity
 import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.components.ButtonComponent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.example.quizdynamox.ui.components.ResponseQuestionComponent
 
 @Composable
 fun QuizScreen(navHostController: NavHostController, nameUser: String?) {
     val quizViewModel = hiltViewModel<QuizViewModel>()
     val questionState by quizViewModel.uiState.collectAsState()
+    val count = remember { mutableStateOf(0) }
+    val finishGame = remember { mutableStateOf(false) }
+    val isLoading = remember { mutableStateOf(false) }
 
-    val result = remember { mutableStateOf(0) }
-    val isLoading = remember {
-        mutableStateOf(false)
-    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        when (questionState) {
-            QuizUiState.Error -> {}
-            QuizUiState.Loading -> {}
-            is QuizUiState.Success -> {
-                val question = (questionState as QuizUiState.Success).question
-
-                question?.let {
-                    if (it.isFinishGame) {
-                        FinishScreen(nameUser, result, navHostController, isLoading)
-                    } else {
-                        GameScreen(it, isLoading)
-                    }
-                }
+        questionState.quiz?.let {
+            quizViewModel.finishGame(it, count = count) { isFinish ->
+                finishGame.value = isFinish
+            }
+            if (finishGame.value) {
+                FinishScreen(
+                    nameUser = nameUser,
+                    result = count,
+                    navHostController = navHostController,
+                    isLoading = isLoading
+                )
+            } else {
+                GameScreen(it, isLoading, quizViewModel, questionState)
             }
         }
+
+
     }
 }
 
 @Composable
 private fun GameScreen(
-    question: QuestionEntity?,
-    isLoading: MutableState<Boolean>
-) {
+    question: QuestionEntity,
+    isLoading: MutableState<Boolean>,
+    quizViewModel: QuizViewModel,
+    questionState: QuizUiData,
+
+    ) {
     val selectedValue = remember { mutableStateOf("") }
+    val answer = Answer(
+        answer = selectedValue.value
+    )
+    val enableRadio = remember {
+        mutableStateOf(true)
+    }
 
-    val coroutineScope = CoroutineScope(Dispatchers.IO + Job())
-    val count = remember { mutableStateOf(0) }
+    Text(text = question.statement, modifier = Modifier.padding(horizontal = 16.dp))
+    Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
-    question?.let {
-        Text(text = it.statement, modifier = Modifier.padding(horizontal = 16.dp))
-        Spacer(modifier = Modifier.padding(vertical = 10.dp))
-
-        it.options.forEach { value ->
-            Row() {
-                RadioButton(
-                    selected = selectedValue.value == value,
-                    onClick = { selectedValue.value = value },
-                )
-                Text(
-                    text = value,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.CenterVertically)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.padding(vertical = 10.dp))
-        ButtonComponent(labelText = "Next Question", isLoading) {
-            count.value += 1
-
-            coroutineScope.launch {
-                delay(1500)
-
-                isLoading.value = false
-            }
+    question.options.forEach { value ->
+        Row {
+            RadioButton(
+                selected = selectedValue.value == value,
+                onClick = { selectedValue.value = value },
+                enabled = enableRadio.value
+            )
+            Text(
+                text = value,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.CenterVertically)
+                    .padding(vertical = 12.dp)
+            )
         }
     }
 
+    Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
+    quizViewModel.getResultQuestion()?.let {
+        ResponseQuestionComponent(message = it.message, color = it.backgroundColor, it.textColor)
+    }
+
+    questionState.result?.let {
+        isLoading.value = false
+        ButtonComponent(labelText = "Next answer", isLoading) {
+            quizViewModel.getNextQuestion()
+            enableRadio.value = true
+        }
+    } ?: run {
+
+        ButtonComponent(labelText = "Send answer", isLoading) {
+            quizViewModel.sendQuestion(question.id, answer)
+            enableRadio.value = false
+        }
+    }
 }
 
 @Composable
