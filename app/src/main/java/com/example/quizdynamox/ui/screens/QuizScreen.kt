@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.quizdynamox.Questions
+import com.example.quizdynamox.Question
 import com.example.quizdynamox.getQuestions
 import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.components.ButtonComponent
@@ -53,7 +53,7 @@ fun QuizScreen(navHostController: NavHostController, nameUser: String?) {
 
 @Composable
 private fun GameScreen(
-    mock: MutableState<Questions>,
+    mock: MutableState<Question>,
     result: MutableState<Int>,
     isLoading: MutableState<Boolean>
 ) {

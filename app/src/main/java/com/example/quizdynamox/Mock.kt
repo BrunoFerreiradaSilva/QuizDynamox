@@ -1,7 +1,7 @@
 package com.example.quizdynamox
 
 
-data class Questions(
+data class Question(
     val id: Int,
     val statement: String,
     val options: List<String>,
@@ -9,8 +9,8 @@ data class Questions(
     val response: String
 )
 
-fun firstQuestion(value: String): Questions {
-    return Questions(
+fun firstQuestion(value: String): Question {
+    return Question(
         id = 1,
         statement = "Qual é a melhor tec mobile?",
         options = listOf("iOS", "Flutter", "React Nativa", "Android"),
@@ -19,8 +19,8 @@ fun firstQuestion(value: String): Questions {
     )
 }
 
-fun secondQuestion(value: String): Questions {
-    return Questions(
+fun secondQuestion(value: String): Question {
+    return Question(
         id = 2,
         statement = "Qual é a melhor tec web?",
         options = listOf("React", "Angular", "Vue", "Sei la"),
@@ -29,8 +29,8 @@ fun secondQuestion(value: String): Questions {
     )
 }
 
-fun question(value: String): Questions {
-    return Questions(
+fun question(value: String): Question {
+    return Question(
         id = 3,
         statement = "Qual é a melhor Time?",
         options = listOf("Flamengo", "Vasco", "Fluminense", "Botafogo"),
@@ -39,8 +39,8 @@ fun question(value: String): Questions {
     )
 }
 
-fun finalQuestion(value: String): Questions {
-    return Questions(
+fun finalQuestion(value: String): Question {
+    return Question(
         id = 4,
         statement = "",
         options = listOf(),
@@ -49,7 +49,7 @@ fun finalQuestion(value: String): Questions {
     )
 }
 
-fun getQuestions(question: Int): Questions {
+fun getQuestions(question: Int): Question {
     return when (question) {
         0 -> firstQuestion("Android")
         1 -> secondQuestion("React")
