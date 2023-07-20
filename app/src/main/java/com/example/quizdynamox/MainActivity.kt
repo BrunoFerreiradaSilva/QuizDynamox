@@ -13,8 +13,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quizdynamox.navigation.Screens
-import com.example.quizdynamox.ui.screens.InitialScreen
+import com.example.quizdynamox.ui.screens.home.HomeScreen
 import com.example.quizdynamox.ui.screens.quiz.QuizScreen
+import com.example.quizdynamox.ui.splash.SplashScreen
 import com.example.quizdynamox.ui.theme.QuizDynamoxTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -39,17 +40,21 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Navigation(navHostController: NavHostController) {
-    NavHost(navController = navHostController, startDestination = Screens.InitialScreen.route) {
+    NavHost(navController = navHostController, startDestination = Screens.SplashScreen.route) {
+        composable(
+            route = Screens.SplashScreen.route
+        ) {
+            SplashScreen(navHostController)
+        }
         composable(
             route = Screens.InitialScreen.route
         ) {
-            InitialScreen(navHostController)
+            HomeScreen(navHostController)
         }
         composable(
-            route = "${Screens.QuizScreen.route}/{nameUser}"
+            route = Screens.QuizScreen.route
         ) {
-            val nameUser = it.arguments?.getString("nameUser")
-            QuizScreen(navHostController, nameUser = nameUser)
+            QuizScreen(navHostController)
         }
 
     }

@@ -1,4 +1,4 @@
-package com.example.quizdynamox.data.repository
+package com.example.quizdynamox.data.repository.quiz
 
 import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.Answer

@@ -25,114 +25,80 @@ import com.example.quizdynamox.model.entity.QuestionEntity
 import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.components.ButtonComponent
 import com.example.quizdynamox.ui.components.ResponseQuestionComponent
+import com.example.quizdynamox.ui.screens.endGame.EndGameScreen
 
 @Composable
-fun QuizScreen(navHostController: NavHostController, nameUser: String?) {
+fun QuizScreen(navHostController: NavHostController) {
     val quizViewModel = hiltViewModel<QuizViewModel>()
     val questionState by quizViewModel.uiState.collectAsState()
-    val count = remember { mutableStateOf(1) }
-    val finishGame = remember { mutableStateOf(false) }
-    val isLoading = remember { mutableStateOf(false) }
 
+    val selectedValue = remember { mutableStateOf("") }
+    val count = remember { mutableStateOf(1) }
+    val isLoading = remember { mutableStateOf(false) }
+    val enableRadio = remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        questionState.quiz?.let {
-            quizViewModel.finishGame(it, count = count) { isFinish ->
-                finishGame.value = isFinish
-            }
-            if (finishGame.value) {
-                FinishScreen(
-                    nameUser = nameUser,
-                    result = count,
-                    navHostController = navHostController,
-                    isLoading = isLoading
-                )
-            } else {
-                GameScreen(it, isLoading, quizViewModel, questionState, count)
-            }
-        }
 
-
-    }
-}
-
-@Composable
-private fun GameScreen(
-    question: QuestionEntity,
-    isLoading: MutableState<Boolean>,
-    quizViewModel: QuizViewModel,
-    questionState: QuizUiData,
-    count: MutableState<Int>,
-
-    ) {
-    val selectedValue = remember { mutableStateOf("") }
-    val answer = Answer(
-        answer = selectedValue.value
-    )
-    val enableRadio = remember {
-        mutableStateOf(true)
-    }
-
-    Text(text = question.statement, modifier = Modifier.padding(horizontal = 16.dp))
-    Spacer(modifier = Modifier.padding(vertical = 10.dp))
-
-    question.options.forEach { value ->
-        Row {
-            RadioButton(
-                selected = selectedValue.value == value,
-                onClick = { selectedValue.value = value },
-                enabled = enableRadio.value
-            )
+        questionState.quiz?.let {question ->
             Text(
-                text = value,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically)
-                    .padding(vertical = 12.dp)
+                text = question.statement,
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
+            Spacer(modifier = Modifier.padding(vertical = 10.dp))
+
+            question.options.forEach { value ->
+                Row {
+                    RadioButton(
+                        selected = selectedValue.value == value,
+                        onClick = { selectedValue.value = value },
+                        enabled = enableRadio.value
+                    )
+                    Text(
+                        text = value,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterVertically)
+                            .padding(vertical = 12.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.padding(vertical = 10.dp))
+
+            quizViewModel.getResultQuestion()?.let {
+                ResponseQuestionComponent(
+                    message = it.message,
+                    color = it.backgroundColor,
+                    it.textColor
+                )
+            }
+
+            questionState.result?.let {
+                isLoading.value = false
+                ButtonComponent(labelText = "Next answer", isLoading) {
+                    quizViewModel.getNextQuestion()
+                    enableRadio.value = true
+                    count.value += 1
+                }
+            } ?: run {
+                val answer = Answer(answer = selectedValue.value)
+                ButtonComponent(labelText = "Send answer", isLoading) {
+                    quizViewModel.sendQuestion(question.id, answer)
+                    enableRadio.value = false
+                }
+            }
+
+            questionState.result?.let {
+                if (it.result) {
+                    quizViewModel.finishGame(count) {
+                        navHostController.navigate(Screens.ResultScreen.route)
+                    }
+                }
+            }
         }
-    }
-
-    Spacer(modifier = Modifier.padding(vertical = 10.dp))
-
-    quizViewModel.getResultQuestion()?.let {
-        ResponseQuestionComponent(message = it.message, color = it.backgroundColor, it.textColor)
-    }
-
-    questionState.result?.let {
-        isLoading.value = false
-        ButtonComponent(labelText = "Next answer", isLoading) {
-            quizViewModel.getNextQuestion()
-            enableRadio.value = true
-            count.value += 1
-        }
-    } ?: run {
-
-        ButtonComponent(labelText = "Send answer", isLoading) {
-            quizViewModel.sendQuestion(question.id, answer)
-            enableRadio.value = false
-        }
-    }
-}
-
-@Composable
-private fun FinishScreen(
-    nameUser: String?,
-    result: MutableState<Int>,
-    navHostController: NavHostController,
-    isLoading: MutableState<Boolean>
-) {
-    nameUser?.let {
-        Text(text = nameUser)
-    }
-    isLoading.value = false
-    Text(text = "Sua Pontuação foi de ${result.value}")
-    Spacer(modifier = Modifier.padding(vertical = 10.dp))
-    ButtonComponent(labelText = "Jogar Denovo", isLoading) {
-        navHostController.navigate(Screens.InitialScreen.route)
     }
 }

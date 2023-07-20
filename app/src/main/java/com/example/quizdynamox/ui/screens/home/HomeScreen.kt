@@ -1,4 +1,4 @@
-package com.example.quizdynamox.ui.screens
+package com.example.quizdynamox.ui.screens.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,14 +17,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.components.ButtonComponent
 
 @Composable
-fun InitialScreen(navHostController: NavHostController) {
+fun HomeScreen(navHostController: NavHostController) {
+    val homeViewModel = hiltViewModel<HomeViewModel>()
     val nameUser = remember { mutableStateOf(TextFieldValue()) }
-    val isloading = remember {
+    val isLoading = remember {
         mutableStateOf(false)
     }
 
@@ -47,8 +49,9 @@ fun InitialScreen(navHostController: NavHostController) {
             ),
             maxLines = 1
         )
-        ButtonComponent(labelText = "Start Quiz", isloading) {
-            navHostController.navigate("${Screens.QuizScreen.route}/${nameUser.value.text}")
+        ButtonComponent(labelText = "Start Quiz", isLoading) {
+            homeViewModel.insertPlayer(nameUser.value.text)
+            navHostController.navigate(Screens.QuizScreen.route)
         }
     }
 

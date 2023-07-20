@@ -11,24 +11,23 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun ButtonComponent(labelText: String, isLoading: MutableState<Boolean>, onClick: () -> Unit) {
-    if (isLoading.value){
+    if (isLoading.value) {
         CircularProgressIndicator(
             modifier = Modifier.padding(16.dp),
             color = MaterialTheme.colorScheme.primary
         )
-    }else{
+    } else {
         Button(
             modifier = Modifier
                 .padding(vertical = 16.dp),
             onClick = {
                 isLoading.value = true
                 onClick()
-                      },
+            },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.surface
@@ -38,7 +37,4 @@ fun ButtonComponent(labelText: String, isLoading: MutableState<Boolean>, onClick
             Text(text = labelText, color = MaterialTheme.colorScheme.surface)
         }
     }
-
-
-
 }

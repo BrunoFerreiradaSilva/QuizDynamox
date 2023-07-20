@@ -4,7 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quizdynamox.data.repository.QuizRepository
+import com.example.quizdynamox.data.repository.quiz.QuizRepository
 import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.Answer
 import com.example.quizdynamox.model.entity.QuestionEntity
@@ -58,11 +58,10 @@ class QuizViewModel @Inject constructor(private val repository: QuizRepository) 
     }
 
     fun finishGame(
-        question: QuestionEntity,
         count: MutableState<Int>,
         isFinish: (Boolean) -> Unit
     ) {
-        isFinish(question.maxQuestions == count.value)
+        isFinish(_uiState.value.quiz?.maxQuestions == count.value)
     }
 
     fun sendQuestion(idQuestion: Int, answer: Answer) {

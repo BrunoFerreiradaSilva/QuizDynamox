@@ -12,11 +12,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun ResponseQuestionComponent(message:String, color: Color, textColor:Color) {
+fun ResponseQuestionComponent(message: String, color: Color, textColor: Color) {
     Box(modifier = Modifier.clip(ShapeDefaults.Medium)) {
         Text(
             text = message,
-            modifier = Modifier.background(color = color).padding(12.dp),
+            modifier = Modifier
+                .background(color = color)
+                .padding(12.dp),
             color = textColor
         )
     }
