@@ -7,6 +7,7 @@ import com.example.quizdynamox.data.repository.player.PlayerRepository
 import com.example.quizdynamox.data.repository.quiz.QuizRepository
 import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.Answer
+import com.example.quizdynamox.model.entity.PlayerEntity
 import com.example.quizdynamox.model.entity.QuestionEntity
 import com.example.quizdynamox.model.entity.ResponseResult
 import com.example.quizdynamox.model.entity.Result
@@ -31,8 +32,9 @@ class QuizViewModel @Inject constructor(
         MutableStateFlow(QuizUiData())
 
     val uiState = _uiState.asStateFlow()
+
     private var count = 1
-    private var result = 0
+    private var result = -1
 
     init {
         viewModelScope.launch {
@@ -43,6 +45,7 @@ class QuizViewModel @Inject constructor(
     fun getNextQuestion(stopLoading: (Boolean) -> Unit) {
         viewModelScope.launch {
             repository.getQuestion().collect(::handleGetQuestion)
+            //playerRepository.updatePlayer()
             count++
             stopLoading(true)
         }
@@ -65,12 +68,19 @@ class QuizViewModel @Inject constructor(
     }
 
     fun finishGame(): Boolean {
-        return count == 10
+        val maxQuestions = 10
+        viewModelScope.launch {
+            //playerRepository.updatePlayer(PlayerEntity(completeQuiz = count == maxQuestions))
+        }
+        return count == maxQuestions
     }
 
     fun correctAnswer(): Int {
-        ++result
-        return result / 2
+        result++
+        viewModelScope.launch {
+           // playerRepository.updatePlayer(PlayerEntity(questionsAnswer = result))
+        }
+        return result
     }
 
     fun sendQuestion(idQuestion: Int, answer: Answer, result: (Boolean, String) -> Unit) {
@@ -78,8 +88,11 @@ class QuizViewModel @Inject constructor(
             if (validateChoice(answer.answer.isNotEmpty())) {
                 repository.sendQuestion(idQuestion = idQuestion, answer = answer)
                     .collect(::getResultQuestion)
+                result(answer.answer.isNotEmpty(), "")
+            } else {
+                result(answer.answer.isEmpty(), "Selecione uma pergunta !")
             }
-            result(answer.answer.isEmpty(), "Selecione uma pergunta !")
+
         }
     }
 
@@ -95,7 +108,7 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    fun getResult(): ResponseResult? {
+    fun questionResponse(): ResponseResult? {
         var responseResult: ResponseResult? = null
         _uiState.value.result?.let {
             responseResult = if (it.result) {

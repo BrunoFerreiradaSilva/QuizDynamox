@@ -12,7 +12,7 @@ interface PlayerDAO {
     @Query("SELECT * from `playerentity`")
     fun getAllPlayers(): Flow<PlayerEntity>
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlayer(player: PlayerEntity)
 
 }

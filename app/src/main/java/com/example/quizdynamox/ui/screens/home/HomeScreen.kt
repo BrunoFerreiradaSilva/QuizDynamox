@@ -1,5 +1,7 @@
 package com.example.quizdynamox.ui.screens.home
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,22 +17,27 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.components.ButtonComponent
+import com.example.quizdynamox.ui.components.TextErrorComponent
 
 @Composable
 fun HomeScreen(navHostController: NavHostController) {
     val homeViewModel = hiltViewModel<HomeViewModel>()
+    val activity = LocalContext.current as Activity
+
     val nameUser = remember { mutableStateOf(TextFieldValue()) }
     val isLoading = remember { mutableStateOf(false) }
-    val errorName = remember {
-        mutableStateOf(
-            false
-        )
+    val errorName = remember { mutableStateOf(false) }
+
+    BackHandler {
+        activity.finish()
     }
 
     Column(
@@ -53,21 +60,20 @@ fun HomeScreen(navHostController: NavHostController) {
             isError = errorName.value,
             maxLines = 1
         )
-        if (errorName.value){
-            Text(text = "Digite um nome")
+        if (errorName.value) {
+            TextErrorComponent(text = "Digite um nome ou apelido")
         }
-        ButtonComponent(labelText = "Start Quiz", isLoading) {
-            //homeViewModel.insertPlayer(nameUser.value.text)
-            if (homeViewModel.validateName(nameUser.value.text)){
-                navHostController.navigate("${Screens.QuizScreen.route}/${nameUser.value.text}")
-                errorName.value = false
-            }else{
-                errorName.value = true
-                isLoading.value = false
-            }
+        val validateName = homeViewModel.validateName(nameUser.value.text)
 
+        ButtonComponent(labelText = "Start Quiz", isLoading) {
+            if (validateName) {
+                //homeViewModel.insertPlayer(nameUser.value.text)
+                navHostController.navigate("${Screens.QuizScreen.route}/${nameUser.value.text}")
+            }
+            errorName.value = !validateName
+            isLoading.value = validateName
         }
-        
+
     }
 
 }

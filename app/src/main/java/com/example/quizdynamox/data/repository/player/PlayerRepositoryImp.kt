@@ -4,7 +4,6 @@ import com.example.quizdynamox.data.database.PlayerDAO
 import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.PlayerEntity
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
@@ -18,4 +17,5 @@ class PlayerRepositoryImp @Inject constructor(private val dao: PlayerDAO) : Play
             emit(DataState.Data(data = player))
         }
     }
+
 }

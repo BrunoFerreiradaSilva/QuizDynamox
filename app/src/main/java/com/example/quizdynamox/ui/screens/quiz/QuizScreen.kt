@@ -1,5 +1,6 @@
 package com.example.quizdynamox.ui.screens.quiz
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,12 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Colors
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -27,34 +26,35 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.quizdynamox.model.entity.Answer
+import com.example.quizdynamox.model.entity.PlayerEntity
 import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.components.ButtonComponent
 import com.example.quizdynamox.ui.components.ResponseQuestionComponent
+import com.example.quizdynamox.ui.components.TextErrorComponent
+import com.example.quizdynamox.ui.screens.endGame.EndGameScreen
 
 @Composable
 fun QuizScreen(navHostController: NavHostController, userName: String?) {
     val quizViewModel = hiltViewModel<QuizViewModel>()
     val questionState by quizViewModel.uiState.collectAsState()
-    val width = LocalConfiguration.current.screenWidthDp.dp+25.dp
 
     val selectedValue = remember { mutableStateOf("") }
     val messageError = remember { mutableStateOf("") }
     val isLoading = remember { mutableStateOf(false) }
     val enableRadio = remember { mutableStateOf(true) }
 
+    BackHandler { }
 
     if (quizViewModel.finishGame()) {
         EndGameScreen(
-            userName = userName,
-            score = quizViewModel.correctAnswer(),
             navHostController = navHostController,
             isLoading = isLoading
         )
@@ -65,7 +65,6 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally
-
             ) {
                 Card(
                     colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
@@ -81,7 +80,9 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                         fontWeight = FontWeight.Bold,
 
                         )
+
                     Spacer(modifier = Modifier.padding(vertical = 10.dp))
+
                     Text(
                         text = question.statement,
                         modifier = Modifier.padding(horizontal = 16.dp)
@@ -97,25 +98,23 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                         text = "Resposta",
                         modifier = Modifier.padding(vertical = 10.dp),
                         fontSize = 20.sp,
-                        textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
                     )
 
-                    LazyColumn(modifier = Modifier.size(width)) {
-                        items(question.options) { item ->
-                            Row {
-                                RadioButton(
-                                    selected = selectedValue.value == item,
-                                    onClick = { selectedValue.value = item },
-                                    enabled = enableRadio.value
-                                )
-                                Text(
-                                    text = item,
-                                    modifier = Modifier
-                                        .padding(vertical = 16.dp)
-                                        .align(Alignment.Top)
-                                )
-                            }
+                    question.options.forEach { item ->
+                        Row(modifier = Modifier.padding(end = 2.dp, bottom = 4.dp)) {
+                            RadioButton(
+                                selected = selectedValue.value == item,
+                                onClick = { selectedValue.value = item },
+                                enabled = enableRadio.value
+                            )
+                            Text(
+                                text = item,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically),
+                                textAlign = TextAlign.Start,
+                                fontSize = 18.sp
+                            )
                         }
                     }
                 }
@@ -125,8 +124,9 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                     verticalArrangement = Arrangement.Center
                 ) {
 
-                    Text(text = messageError.value)
-                    quizViewModel.getResult()?.let {
+                    TextErrorComponent(text = messageError.value)
+
+                    quizViewModel.questionResponse()?.let {
                         ResponseQuestionComponent(
                             message = it.message,
                             color = it.backgroundColor,
@@ -138,9 +138,9 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                         isLoading.value = false
                         messageError.value = ""
                         ButtonComponent(labelText = "Next answer", isLoading) {
-                            quizViewModel.getNextQuestion() { loading ->
-                                isLoading.value = !loading
-                                enableRadio.value = loading
+                            quizViewModel.getNextQuestion() { enabled ->
+                                isLoading.value = !enabled
+                                enableRadio.value = enabled
                                 selectedValue.value = ""
                             }
                         }
@@ -157,34 +157,8 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                             }
                         }
                     }
-
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun EndGameScreen(
-    userName: String?,
-    score: Int,
-    navHostController: NavHostController,
-    isLoading: MutableState<Boolean>
-) {
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        if (userName != null) {
-            Text(text = userName)
-        }
-        Text(text = "Sua Pontuação foi de $score")
-
-        Spacer(modifier = Modifier.padding(vertical = 10.dp))
-        ButtonComponent(labelText = "Jogar Denovo", isLoading) {
-            navHostController.navigate(Screens.InitialScreen.route)
         }
     }
 }

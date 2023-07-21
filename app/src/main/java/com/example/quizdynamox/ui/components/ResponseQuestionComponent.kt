@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -19,7 +20,8 @@ fun ResponseQuestionComponent(message: String, color: Color, textColor: Color) {
             modifier = Modifier
                 .background(color = color)
                 .padding(12.dp),
-            color = textColor
+            color = textColor,
+            fontWeight = FontWeight.W500
         )
     }
 
