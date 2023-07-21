@@ -1,5 +1,6 @@
 package com.example.quizdynamox.ui.screens.quiz
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Colors
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,6 +43,7 @@ import com.example.quizdynamox.ui.components.ResponseQuestionComponent
 fun QuizScreen(navHostController: NavHostController, userName: String?) {
     val quizViewModel = hiltViewModel<QuizViewModel>()
     val questionState by quizViewModel.uiState.collectAsState()
+    val width = LocalConfiguration.current.screenWidthDp.dp+25.dp
 
     val selectedValue = remember { mutableStateOf("") }
     val messageError = remember { mutableStateOf("") }
@@ -58,25 +64,28 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState()),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+                horizontalAlignment = Alignment.CenterHorizontally
 
             ) {
-                Text(
-                    text = "Pergunta",
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold
-                )
-                Column(Modifier.padding(vertical = 12.dp)) {
+                Card(
+                    colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(bottom = 8.dp)
+                ) {
+                    Text(
+                        text = "Pergunta",
+                        modifier = Modifier.fillMaxWidth(),
+                        fontSize = 24.sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold,
+
+                        )
+                    Spacer(modifier = Modifier.padding(vertical = 10.dp))
                     Text(
                         text = question.statement,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
-                    Spacer(modifier = Modifier.padding(vertical = 8.dp))
-
-
                 }
 
                 Column(
@@ -91,8 +100,6 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                         textAlign = TextAlign.Center,
                         fontWeight = FontWeight.Bold
                     )
-                    val width = LocalConfiguration.current.screenWidthDp.dp
-
 
                     LazyColumn(modifier = Modifier.size(width)) {
                         items(question.options) { item ->

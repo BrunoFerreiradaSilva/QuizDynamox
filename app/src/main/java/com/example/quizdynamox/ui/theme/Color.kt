@@ -16,5 +16,4 @@ val wine100 = Color(0xFF956769)
 val wine110 = Color(0xFFb08b8c)
 val wine120 = Color(0xFFcab0b1)
 val wine130 = Color(0xFFe5d7d7)
-
 val black = Color(0xFF000000)
