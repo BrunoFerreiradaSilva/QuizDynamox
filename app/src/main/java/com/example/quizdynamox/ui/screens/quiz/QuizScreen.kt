@@ -40,10 +40,9 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
     val questionState by quizViewModel.uiState.collectAsState()
 
     val selectedValue = remember { mutableStateOf("") }
+    val messageError = remember { mutableStateOf("") }
     val isLoading = remember { mutableStateOf(false) }
     val enableRadio = remember { mutableStateOf(true) }
-
-
 
 
     if (quizViewModel.finishGame()) {
@@ -118,6 +117,8 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+
+                    Text(text = messageError.value)
                     quizViewModel.getResult()?.let {
                         ResponseQuestionComponent(
                             message = it.message,
@@ -128,10 +129,13 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
 
                     questionState.result?.let {
                         isLoading.value = false
+                        messageError.value = ""
                         ButtonComponent(labelText = "Next answer", isLoading) {
-                            quizViewModel.getNextQuestion()
-                            enableRadio.value = true
-                            isLoading.value = false
+                            quizViewModel.getNextQuestion() { loading ->
+                                isLoading.value = !loading
+                                enableRadio.value = loading
+                                selectedValue.value = ""
+                            }
                         }
                         if (it.result) {
                             quizViewModel.correctAnswer()
@@ -139,15 +143,17 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
                     } ?: run {
                         val answer = Answer(answer = selectedValue.value)
                         ButtonComponent(labelText = "Send answer", isLoading) {
-                            quizViewModel.sendQuestion(question.id, answer)
-                            enableRadio.value = false
+                            quizViewModel.sendQuestion(question.id, answer) { enabled, message ->
+                                enableRadio.value = enabled
+                                isLoading.value = !enabled
+                                messageError.value = message
+                            }
                         }
-
                     }
+
                 }
             }
         }
-
     }
 }
 

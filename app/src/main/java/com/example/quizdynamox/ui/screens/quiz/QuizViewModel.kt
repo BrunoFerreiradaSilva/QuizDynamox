@@ -1,6 +1,5 @@
 package com.example.quizdynamox.ui.screens.quiz
 
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,10 +40,11 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    fun getNextQuestion() {
+    fun getNextQuestion(stopLoading: (Boolean) -> Unit) {
         viewModelScope.launch {
             repository.getQuestion().collect(::handleGetQuestion)
             count++
+            stopLoading(true)
         }
     }
 
@@ -70,13 +70,16 @@ class QuizViewModel @Inject constructor(
 
     fun correctAnswer(): Int {
         ++result
-        return result/2
+        return result / 2
     }
 
-    fun sendQuestion(idQuestion: Int, answer: Answer) {
+    fun sendQuestion(idQuestion: Int, answer: Answer, result: (Boolean, String) -> Unit) {
         viewModelScope.launch {
-            repository.sendQuestion(idQuestion = idQuestion, answer = answer)
-                .collect(::getResultQuestion)
+            if (validateChoice(answer.answer.isNotEmpty())) {
+                repository.sendQuestion(idQuestion = idQuestion, answer = answer)
+                    .collect(::getResultQuestion)
+            }
+            result(answer.answer.isEmpty(), "Selecione uma pergunta !")
         }
     }
 
@@ -85,7 +88,6 @@ class QuizViewModel @Inject constructor(
             is DataState.Data -> {
                 val quiz = _uiState.value.quiz
                 _uiState.value = QuizUiData(quiz = quiz, result = state.data)
-
             }
 
             is DataState.Error -> {}
@@ -111,5 +113,9 @@ class QuizViewModel @Inject constructor(
             }
         }
         return responseResult
+    }
+
+    private fun validateChoice(isSelected: Boolean): Boolean {
+        return isSelected
     }
 }
