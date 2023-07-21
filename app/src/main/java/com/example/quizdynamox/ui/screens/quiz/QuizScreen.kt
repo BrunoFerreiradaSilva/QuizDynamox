@@ -1,7 +1,6 @@
 package com.example.quizdynamox.ui.screens.quiz
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -25,10 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,23 +40,19 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
     val questionState by quizViewModel.uiState.collectAsState()
 
     val selectedValue = remember { mutableStateOf("") }
-    val count = remember { mutableStateOf(1) }
     val isLoading = remember { mutableStateOf(false) }
     val enableRadio = remember { mutableStateOf(true) }
-    val score = remember { mutableStateOf(0) }
-    val endGame = remember {
-        mutableStateOf(false)
-    }
 
-    if (endGame.value) {
-        if (userName != null) {
-            EndGameScreen(
-                userName = userName,
-                score = score.value,
-                navHostController = navHostController,
-                isLoading = isLoading
-            )
-        }
+
+
+
+    if (quizViewModel.finishGame()) {
+        EndGameScreen(
+            userName = userName,
+            score = quizViewModel.correctAnswer(),
+            navHostController = navHostController,
+            isLoading = isLoading
+        )
     } else {
         questionState.quiz?.let { question ->
             Column(
@@ -136,13 +128,13 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
 
                     questionState.result?.let {
                         isLoading.value = false
-                        if (it.result) {
-                            score.value = quizViewModel.correctAnswer()
-                        }
                         ButtonComponent(labelText = "Next answer", isLoading) {
                             quizViewModel.getNextQuestion()
                             enableRadio.value = true
-                            count.value += 1
+                            isLoading.value = false
+                        }
+                        if (it.result) {
+                            quizViewModel.correctAnswer()
                         }
                     } ?: run {
                         val answer = Answer(answer = selectedValue.value)
@@ -156,12 +148,6 @@ fun QuizScreen(navHostController: NavHostController, userName: String?) {
             }
         }
 
-    }
-
-    quizViewModel.finishGame(count) {
-        if (it) {
-            endGame.value = true
-        }
     }
 }
 

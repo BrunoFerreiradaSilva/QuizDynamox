@@ -32,7 +32,8 @@ class QuizViewModel @Inject constructor(
         MutableStateFlow(QuizUiData())
 
     val uiState = _uiState.asStateFlow()
-    private var count = 0
+    private var count = 1
+    private var result = 0
 
     init {
         viewModelScope.launch {
@@ -43,6 +44,7 @@ class QuizViewModel @Inject constructor(
     fun getNextQuestion() {
         viewModelScope.launch {
             repository.getQuestion().collect(::handleGetQuestion)
+            count++
         }
     }
 
@@ -62,17 +64,13 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    fun finishGame(
-        count: MutableState<Int>,
-        isFinish: (Boolean) -> Unit
-    ) {
-        isFinish(_uiState.value.quiz?.maxQuestions == count.value)
-        return
+    fun finishGame(): Boolean {
+        return count == 10
     }
 
     fun correctAnswer(): Int {
-        count++
-        return count / 2
+        ++result
+        return result/2
     }
 
     fun sendQuestion(idQuestion: Int, answer: Answer) {

@@ -20,4 +20,8 @@ class HomeViewModel @Inject constructor(private val repository: PlayerRepository
             repository.insertPlayer(player)
         }
     }
+
+    fun validateName(name:String): Boolean{
+       return name.isNotEmpty()
+    }
 }

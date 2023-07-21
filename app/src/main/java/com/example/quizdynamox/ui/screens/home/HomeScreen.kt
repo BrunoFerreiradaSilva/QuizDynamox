@@ -26,8 +26,11 @@ import com.example.quizdynamox.ui.components.ButtonComponent
 fun HomeScreen(navHostController: NavHostController) {
     val homeViewModel = hiltViewModel<HomeViewModel>()
     val nameUser = remember { mutableStateOf(TextFieldValue()) }
-    val isLoading = remember {
-        mutableStateOf(false)
+    val isLoading = remember { mutableStateOf(false) }
+    val errorName = remember {
+        mutableStateOf(
+            false
+        )
     }
 
     Column(
@@ -47,12 +50,24 @@ fun HomeScreen(navHostController: NavHostController) {
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.primary
             ),
+            isError = errorName.value,
             maxLines = 1
         )
+        if (errorName.value){
+            Text(text = "Digite um nome")
+        }
         ButtonComponent(labelText = "Start Quiz", isLoading) {
             //homeViewModel.insertPlayer(nameUser.value.text)
-            navHostController.navigate("${Screens.QuizScreen.route}/${nameUser.value.text}")
+            if (homeViewModel.validateName(nameUser.value.text)){
+                navHostController.navigate("${Screens.QuizScreen.route}/${nameUser.value.text}")
+                errorName.value = false
+            }else{
+                errorName.value = true
+                isLoading.value = false
+            }
+
         }
+        
     }
 
 }
