@@ -87,8 +87,6 @@ class QuizViewModel @Inject constructor(
         when (state) {
             is DataState.Data -> {
                 viewModelScope.launch {
-                    delay(300)
-
                     val optionsUi = state.data.options.mapIndexed { index, optionText ->
                         OptionUi(
                             isSelected = false,
