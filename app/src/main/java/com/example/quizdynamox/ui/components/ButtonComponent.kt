@@ -21,7 +21,6 @@ fun ButtonComponent(labelText: String, onClick: () -> Unit) {
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.surface
         ),
         shape = ShapeDefaults.Small
     ) {

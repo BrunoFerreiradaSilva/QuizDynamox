@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">QuizDynamox</string>
     <string name="question">Pergunta</string>
-    <string name="answer">Resposta</string>
+    <string name="answer">Alternativas</string>
     <string name="result_error">Resposta Errada</string>
     <string name="result_success">Resposta Correta</string>
     <string name="not_selected_answer">Selecione uma resposta !</string>
@@ -11,4 +11,6 @@
     <string name="progress">%1$s/10</string>
     <string name="start_quiz">Iniciar</string>
     <string name="name_hint">Nome ou apelido</string>
+    <string name="finish_game_name">"Parabéns %1$s"</string>
+    <string name="finish_game_score">Você marcou %1$s pontos.</string>
 </resources>

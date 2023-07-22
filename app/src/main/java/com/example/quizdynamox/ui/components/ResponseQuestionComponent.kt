@@ -2,7 +2,13 @@ package com.example.quizdynamox.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,24 +28,42 @@ fun ResponseQuestionComponent(isAnswerCorrect: Boolean) {
         stringResource(id = R.string.result_error)
     }
     val color = if (isAnswerCorrect) {
-        Color.Green
+        Color(0xFF6EB470)
     } else {
-        Color.Red
+        Color.Black
     }
     val textColor = if (isAnswerCorrect) {
         Color.Black
     } else {
         Color.White
     }
-    Box(modifier = Modifier.clip(ShapeDefaults.Medium)) {
-        Text(
-            text = message,
-            modifier = Modifier
-                .background(color = color)
-                .padding(12.dp),
-            color = textColor,
-            fontWeight = FontWeight.W500
-        )
+    val icon = if (isAnswerCorrect) {
+        Icons.Default.Check
+    } else {
+        Icons.Default.Close
+    }
+    val colorIcon = if (isAnswerCorrect){
+        Color.Green
+    }else{
+        Color.Red
+    }
+
+    Box(
+        modifier = Modifier
+            .clip(ShapeDefaults.Medium)
+            .background(color = color)
+            .padding(12.dp)
+    ) {
+        Row {
+            Text(
+                text = message,
+                color = textColor,
+                fontWeight = FontWeight.W500,
+                modifier = Modifier.padding(end = 4.dp)
+            )
+            Icon(imageVector = icon, contentDescription = "icon response", tint = colorIcon)
+        }
+
     }
 
 }

@@ -14,11 +14,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CardEndGameComponent(playerName: String = "bruno", playerScore: Int = 0, colorCard:Color) {
+fun CardEndGameComponent(playerName: String, playerScore: Int) {
     Card(
         modifier = Modifier
             .padding(8.dp),
-        colors = CardDefaults.cardColors(colorCard),
+        colors = CardDefaults.cardColors(MaterialTheme.colorScheme.onTertiaryContainer),
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(

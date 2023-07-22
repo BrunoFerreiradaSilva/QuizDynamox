@@ -13,18 +13,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -101,13 +104,13 @@ private fun StateButtons(
     getNextQuestion: () -> Unit,
     showMessageError: Boolean,
     sendAnswer: () -> Unit,
-
-
-    ) {
+) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
+
+        Spacer(modifier = Modifier.padding(vertical = 12.dp))
         if (showMessageError) {
             TextErrorComponent(
                 messageError = stringResource(id = R.string.not_selected_answer)
@@ -137,33 +140,38 @@ private fun Options(
     selectOptions: (index: Int) -> Unit
 ) {
 
+    Spacer(modifier = Modifier.padding(top = 12.dp))
     Column(
         modifier = Modifier
-            .fillMaxWidth()
+            .defaultMinSize(minHeight = 380.dp, minWidth = 380.dp)
             .padding(8.dp)
     ) {
         Text(
             text = stringResource(id = R.string.answer),
             modifier = Modifier.padding(vertical = 10.dp),
             fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.ExtraBold
         )
 
         options.forEach { item ->
             Row(modifier = Modifier.padding(end = 2.dp, bottom = 4.dp)) {
-                RadioButton(
-                    selected = item.isSelected,
+                Spacer(modifier = Modifier.padding(bottom = 12.dp))
+                OutlinedButton(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp),
                     onClick = { selectOptions(item.index) },
-                    enabled = item.isEnabled
-                )
-                Text(
-                    text = item.text,
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically),
-                    textAlign = TextAlign.Start,
-                    fontSize = 18.sp
-                )
+                    enabled = item.isEnabled,
+                    colors = ButtonDefaults.buttonColors(if (item.isSelected) MaterialTheme.colorScheme.primary else Color.White),
+                    shape = ShapeDefaults.Small
+                ) {
+                    Text(
+                        text = item.text,
+                        fontSize = 14.sp,
+                        modifier = Modifier.padding(8.dp),
+                        color = if (item.isSelected) Color.White else MaterialTheme.colorScheme.primary
+                    )
+                }
             }
+
         }
     }
 }

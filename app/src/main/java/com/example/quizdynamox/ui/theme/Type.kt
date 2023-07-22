@@ -12,10 +12,14 @@ private val Montserrat = FontFamily(
     Font(R.font.montserrat_light, FontWeight.W300)
 )
 
+private val Century = FontFamily(
+    Font(R.font.century_gothic, FontWeight.W400)
+)
+
 
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = Montserrat,
+        fontFamily = Century,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
