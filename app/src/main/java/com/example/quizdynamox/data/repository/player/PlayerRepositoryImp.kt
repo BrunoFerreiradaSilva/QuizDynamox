@@ -12,9 +12,13 @@ class PlayerRepositoryImp @Inject constructor(private val dao: PlayerDAO) : Play
         dao.insertPlayer(player = player)
     }
 
-    override fun getAllPlayers(): Flow<DataState<PlayerEntity?>> = flow{
-        dao.getAllPlayers().collect{ player ->
-            emit(DataState.Data(data = player))
+    override fun getAllPlayers(): Flow<DataState<List<PlayerEntity>>> = flow{
+        dao.getAllPlayers().collect{ listPlayer ->
+            listPlayer?.let {player ->
+                emit(DataState.Data(data = player))
+            }?: run {
+                emit(DataState.Data(data = emptyList()))
+            }
         }
     }
 

@@ -82,4 +82,5 @@ dependencies {
     kapt "androidx.room:room-compiler:2.5.1"
     // lifecycleScope:
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-alpha04'
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"}
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+}

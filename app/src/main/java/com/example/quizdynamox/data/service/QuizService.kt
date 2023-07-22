@@ -1,7 +1,7 @@
 package com.example.quizdynamox.data.service
 
 import com.example.quizdynamox.model.dto.QuestionDTO
-import com.example.quizdynamox.model.entity.Answer
+import com.example.quizdynamox.model.entity.AnswerRequest
 import com.example.quizdynamox.model.entity.Result
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -13,5 +13,5 @@ interface QuizService {
     suspend fun getQuestions(): QuestionDTO
 
     @POST("/answer?")
-    suspend fun sendQuestion(@Query("questionId") questionId: Int, @Body answer: Answer): Result
+    suspend fun sendQuestion(@Query("questionId") questionId: Int, @Body answerRequest: AnswerRequest): Result
 }

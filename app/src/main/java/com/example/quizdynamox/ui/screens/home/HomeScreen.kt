@@ -13,28 +13,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
-import com.example.quizdynamox.navigation.Screens
+import com.example.quizdynamox.R
 import com.example.quizdynamox.ui.components.ButtonComponent
 import com.example.quizdynamox.ui.components.TextErrorComponent
 
 @Composable
-fun HomeScreen(navHostController: NavHostController) {
-    val homeViewModel = hiltViewModel<HomeViewModel>()
+fun HomeScreen(onQuizScreen: (String) -> Unit) {
+    val viewModel = hiltViewModel<HomeViewModel>()
+    val state by viewModel.uiState.collectAsState()
     val activity = LocalContext.current as Activity
 
     val nameUser = remember { mutableStateOf(TextFieldValue()) }
-    val isLoading = remember { mutableStateOf(false) }
-    val errorName = remember { mutableStateOf(false) }
 
     BackHandler {
         activity.finish()
@@ -47,33 +48,45 @@ fun HomeScreen(navHostController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        OutlinedTextField(
-            modifier = Modifier.fillMaxWidth(),
-            value = nameUser.value,
-            onValueChange = { nameUser.value = it },
-            label = { Text(text = "Nome ou Apelido") },
-            shape = ShapeDefaults.Medium,
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                unfocusedBorderColor = MaterialTheme.colorScheme.primary
-            ),
-            isError = errorName.value,
-            maxLines = 1
-        )
-        if (errorName.value) {
-            TextErrorComponent(text = "Digite um nome ou apelido")
-        }
-        val validateName = homeViewModel.validateName(nameUser.value.text)
 
-        ButtonComponent(labelText = "Start Quiz", isLoading) {
-            if (validateName) {
-                //homeViewModel.insertPlayer(nameUser.value.text)
-                navHostController.navigate("${Screens.QuizScreen.route}/${nameUser.value.text}")
+        NameForGame(nameUser, state.fieldValid)
+
+        state.showErrorName?.let {
+            if (it){
+                TextErrorComponent(
+                    messageError = stringResource(id = R.string.error_insert_name)
+                )
             }
-            errorName.value = !validateName
-            isLoading.value = validateName
+        }
+
+
+        ButtonComponent(labelText = "Start Quiz") {
+            viewModel.validateName(name = nameUser.value.text) { invalid ->
+                if (!invalid) {
+                    onQuizScreen(nameUser.value.text)
+                }
+            }
         }
 
     }
+}
 
+@Composable
+private fun NameForGame(
+    nameUser: MutableState<TextFieldValue>,
+    isError: Boolean
+) {
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = nameUser.value,
+        onValueChange = { nameUser.value = it },
+        label = { Text(text = "Nome ou Apelido") },
+        shape = ShapeDefaults.Medium,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary
+        ),
+        isError = isError,
+        maxLines = 1
+    )
 }

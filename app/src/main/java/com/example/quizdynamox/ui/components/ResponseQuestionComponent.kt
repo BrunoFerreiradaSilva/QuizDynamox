@@ -9,11 +9,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.quizdynamox.R
 
 @Composable
-fun ResponseQuestionComponent(message: String, color: Color, textColor: Color) {
+fun ResponseQuestionComponent(isAnswerCorrect:Boolean) {
+    val message = if (isAnswerCorrect) {
+        stringResource(id = R.string.result_success)
+    }else{
+        stringResource(id = R.string.result_error)
+    }
+    val color = if (isAnswerCorrect){
+        Color.Green
+    }else{
+        Color.Red
+    }
+    val textColor = if(isAnswerCorrect){
+        Color.Black
+    }else{
+        Color.White
+    }
     Box(modifier = Modifier.clip(ShapeDefaults.Medium)) {
         Text(
             text = message,

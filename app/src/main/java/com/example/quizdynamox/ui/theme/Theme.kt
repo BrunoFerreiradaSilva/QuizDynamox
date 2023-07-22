@@ -19,14 +19,16 @@ private val DarkColorScheme = darkColorScheme(
     primary = wine80,
     secondary = wine90,
     tertiary = wine100,
-    surface = black
+    surface = black,
+    onSurface = wine50
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = wine20,
     secondary = wine30,
     tertiary = wine40,
-    surface = white
+    surface = white,
+    onSurface = wine110
 )
 
 @Composable

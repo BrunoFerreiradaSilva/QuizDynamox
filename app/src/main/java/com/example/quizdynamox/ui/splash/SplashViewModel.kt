@@ -28,13 +28,13 @@ class SplashViewModel @Inject constructor(private val repository: PlayerReposito
             repository.getAllPlayers().collect{state ->
                 when(state){
                     is DataState.Data -> {
-                        state.data?.completeQuiz?.let {
-                            if (it){
-                                _uiState.value = SplashDataUi("initial_screen")
-                            }
-                        }?: run{
-                            _uiState.value = SplashDataUi("initial_screen")
-                        }
+//                        state.data?.completeQuiz?.let {
+//                            if (it){
+//                                _uiState.value = SplashDataUi("initial_screen")
+//                            }
+//                        }?: run{
+//                            _uiState.value = SplashDataUi("initial_screen")
+//                        }
                     }
                     else -> {}
                 }

@@ -1,46 +1,65 @@
 package com.example.quizdynamox.ui.screens.endGame
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quizdynamox.data.repository.player.PlayerRepository
 import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.PlayerEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.handleCoroutineException
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class PlayerUiData(
-    val players: List<PlayerEntity> = listOf()
+    val playerName: String = "",
+    val playerScore: Int = 0,
+    val allPlayers: List<PlayerEntity> = emptyList()
 )
 
 @HiltViewModel
-class EndGameViewModel @Inject constructor(private val repository: PlayerRepository) : ViewModel() {
+class EndGameViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val repository: PlayerRepository
+) : ViewModel() {
     private val _uiState: MutableStateFlow<PlayerUiData> =
         MutableStateFlow(PlayerUiData())
 
     val uiState = _uiState.asStateFlow()
 
+    private val nameUser: String = checkNotNull(savedStateHandle["nameUser"])
+    private val score: Int = checkNotNull(savedStateHandle["scoreGame"])
+
     init {
         viewModelScope.launch {
+            _uiState.value = _uiState.value.copy(playerScore = score, playerName = nameUser)
             repository.getAllPlayers().collect(::handleGetAllPlayers)
         }
     }
 
-    private fun handleGetAllPlayers(state: DataState<PlayerEntity?>) {
-        val listPlayers = mutableListOf<PlayerEntity>()
+    fun insertPlayerRoom() {
+        viewModelScope.launch {
+            delay(300)
+            repository.insertPlayer(PlayerEntity(name = nameUser, score = score))
+        }
+    }
+
+    private fun handleGetAllPlayers(state: DataState<List<PlayerEntity>?>) {
         when (state) {
             is DataState.Data -> {
-                state.data?.let { player ->
-                    listPlayers.add(player)
-                    _uiState.value = PlayerUiData(listPlayers)
+                state.data?.let {
+                    _uiState.value = _uiState.value.copy(
+                        allPlayers = it
+                    )
                 }
+
             }
 
             is DataState.Error -> {}
             is DataState.Loading -> {}
         }
     }
-
 }
