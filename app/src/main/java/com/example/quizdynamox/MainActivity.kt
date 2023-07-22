@@ -16,7 +16,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.screens.endGame.EndGameScreen
-import com.example.quizdynamox.ui.screens.home.HomeScreen
+import com.example.quizdynamox.ui.screens.quizStart.HomeScreen
 import com.example.quizdynamox.ui.screens.quiz.QuizScreen
 import com.example.quizdynamox.ui.theme.QuizDynamoxTheme
 import dagger.hilt.android.AndroidEntryPoint

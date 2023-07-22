@@ -1,7 +1,5 @@
-package com.example.quizdynamox.ui.screens.home
+package com.example.quizdynamox.ui.screens.quizStart
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -33,13 +30,8 @@ import com.example.quizdynamox.ui.components.TextErrorComponent
 fun HomeScreen(onQuizScreen: (String) -> Unit) {
     val viewModel = hiltViewModel<HomeViewModel>()
     val state by viewModel.uiState.collectAsState()
-    val activity = LocalContext.current as Activity
 
     val nameUser = remember { mutableStateOf(TextFieldValue()) }
-
-    BackHandler {
-        activity.finish()
-    }
 
     Column(
         Modifier
@@ -51,6 +43,7 @@ fun HomeScreen(onQuizScreen: (String) -> Unit) {
 
         NameForGame(nameUser, state.fieldValid)
 
+
         state.showErrorName?.let {
             if (it) {
                 TextErrorComponent(
@@ -59,7 +52,6 @@ fun HomeScreen(onQuizScreen: (String) -> Unit) {
             }
         }
 
-
         ButtonComponent(labelText = stringResource(id = R.string.start_quiz)) {
             viewModel.validateName(name = nameUser.value.text) { invalid ->
                 if (!invalid) {
@@ -67,7 +59,6 @@ fun HomeScreen(onQuizScreen: (String) -> Unit) {
                 }
             }
         }
-
     }
 }
 
@@ -80,7 +71,12 @@ private fun NameForGame(
         modifier = Modifier.fillMaxWidth(),
         value = nameUser.value,
         onValueChange = { nameUser.value = it },
-        label = { Text(text = stringResource(id = R.string.name_hint), color = MaterialTheme.colorScheme.onTertiary) },
+        label = {
+            Text(
+                text = stringResource(id = R.string.name_hint),
+                color = MaterialTheme.colorScheme.onTertiary
+            )
+        },
         shape = ShapeDefaults.Medium,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             textColor = MaterialTheme.colorScheme.onTertiary,

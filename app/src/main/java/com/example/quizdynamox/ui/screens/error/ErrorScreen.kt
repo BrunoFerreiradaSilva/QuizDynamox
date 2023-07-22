@@ -15,9 +15,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.quizdynamox.R
 import com.example.quizdynamox.ui.components.ButtonComponent
 
 @Composable
@@ -29,7 +31,7 @@ fun ErrorScreen(error: Boolean, tryAgain: () -> Unit) {
     ) {
         Icon(
             imageVector = Icons.Rounded.Close,
-            contentDescription = "error",
+            contentDescription = stringResource(id = R.string.icon_error_request),
             modifier = Modifier.size(100.dp),
             tint = Color.Red
         )
@@ -38,14 +40,14 @@ fun ErrorScreen(error: Boolean, tryAgain: () -> Unit) {
 
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = "Não foi possivel carregar as perguntas",
+            text = stringResource(id = R.string.text_error_request),
             fontSize = 16.sp,
             textAlign = TextAlign.Center
         )
 
         Spacer(modifier = Modifier.padding(vertical = 20.dp))
 
-        ButtonComponent(labelText = "Retry") {
+        ButtonComponent(labelText = stringResource(id = R.string.try_again_text_button)) {
             if (error) {
                 tryAgain()
             }

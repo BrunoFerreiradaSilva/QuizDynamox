@@ -9,9 +9,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.quizdynamox.R
 
 @Composable
 fun CardEndGameComponent(playerName: String, playerScore: Int) {
@@ -27,12 +28,12 @@ fun CardEndGameComponent(playerName: String, playerScore: Int) {
                 .fillMaxWidth()
         ) {
             Text(
-                text = "Nome: $playerName",
+                text = stringResource(id = R.string.name_player_in_cache, playerName),
                 color = MaterialTheme.colorScheme.surface,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Pontuação: $playerScore",
+                text = stringResource(id = R.string.score_player_in_cache, playerScore),
                 color = MaterialTheme.colorScheme.surface,
                 fontWeight = FontWeight.Bold
             )

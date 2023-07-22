@@ -13,4 +13,11 @@
     <string name="name_hint">Nome ou apelido</string>
     <string name="finish_game_name">"Parabéns %1$s"</string>
     <string name="finish_game_score">Você marcou %1$s pontos.</string>
+    <string name="name_player_in_cache">Nome: %1$s</string>
+    <string name="score_player_in_cache">Pontuação: %1$s</string>
+    <string name="icon_result_answer_content">Icone de resultado</string>
+    <string name="player_again">Jogar denovo</string>
+    <string name="icon_error_request">Icone de error na request</string>
+    <string name="text_error_request">Não foi possivel carregar as perguntas</string>
+    <string name="try_again_text_button">Tentar Novamente</string>
 </resources>

@@ -17,17 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = wine80,
-    secondary = wine90,
-    tertiary = wine100,
-    surface = white,
-    onSurface = black,
-    onTertiary = white,
-    tertiaryContainer = wine70,
-    onTertiaryContainer = wine50
-)
-
 private val LightColorScheme = lightColorScheme(
     primary = wine20,
     secondary = wine30,
@@ -49,7 +38,6 @@ fun QuizDynamoxTheme(
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-
         }
 
         darkTheme -> LightColorScheme

@@ -32,7 +32,7 @@ object Module {
     }
 
     @Provides
-    fun providesPlayerRepository(playerDAO: PlayerDAO):PlayerRepository{
+    fun providesPlayerRepository(playerDAO: PlayerDAO): PlayerRepository {
         return PlayerRepositoryImp(playerDAO)
     }
 
@@ -44,7 +44,7 @@ object Module {
     @Provides
     fun providesRetrofit(): QuizService {
         val client = OkHttpClient.Builder()
-            .readTimeout(60, TimeUnit.MINUTES)
+            .readTimeout(1, TimeUnit.MINUTES)
             .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
             .build()
 

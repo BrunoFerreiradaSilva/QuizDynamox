@@ -1,7 +1,6 @@
-package com.example.quizdynamox.ui.screens.home
+package com.example.quizdynamox.ui.screens.quizStart
 
 import androidx.lifecycle.ViewModel
-import com.example.quizdynamox.data.repository.player.PlayerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

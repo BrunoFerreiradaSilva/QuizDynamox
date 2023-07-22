@@ -1,11 +1,13 @@
 package com.example.quizdynamox.ui.screens.quiz
 
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Brush
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quizdynamox.data.repository.quiz.QuizRepository
 import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.Question
-import com.example.quizdynamox.model.entity.Result
+import com.example.quizdynamox.model.entity.ResultResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class QuizzUiState(
+data class QuizUiState(
     val isLoading: Boolean = true,
     val showError: Boolean = false,
     val showData: Boolean = false,
@@ -42,13 +44,13 @@ class QuizViewModel @Inject constructor(
     private val repository: QuizRepository,
 ) : ViewModel() {
 
-    private val _uiState: MutableStateFlow<QuizzUiState> =
-        MutableStateFlow(QuizzUiState(questionId = null))
+    private val _uiState: MutableStateFlow<QuizUiState> =
+        MutableStateFlow(QuizUiState(questionId = null))
 
     val uiState = _uiState.asStateFlow()
 
-    private var result = 0
-    private var count = 0.1f
+    private var resultGame = 0
+    private var progressCount = 0.1f
 
     init {
         viewModelScope.launch {
@@ -71,13 +73,13 @@ class QuizViewModel @Inject constructor(
     }
 
     private fun updateProgress() {
-        count += 0.1f
+        progressCount += 0.1f
         _uiState.value =
-            _uiState.value.copy(currentQuestion = count)
+            _uiState.value.copy(currentQuestion = progressCount)
     }
 
     private fun isFinishGame() {
-        val countQuestions = (count * 10).toInt()
+        val countQuestions = (progressCount * 10).toInt()
         val finishTheGame = countQuestions >= 10
 
         _uiState.value = _uiState.value.copy(finishTheGame = finishTheGame)
@@ -95,7 +97,7 @@ class QuizViewModel @Inject constructor(
                         )
                     }
 
-                    _uiState.value = QuizzUiState(
+                    _uiState.value = QuizUiState(
                         questionId = state.data.id,
                         isLoading = false,
                         showData = true,
@@ -110,7 +112,7 @@ class QuizViewModel @Inject constructor(
 
             is DataState.Error -> {
                 _uiState.value =
-                    QuizzUiState(
+                    QuizUiState(
                         questionId = null,
                         isLoading = false,
                         showError = true,
@@ -121,7 +123,7 @@ class QuizViewModel @Inject constructor(
             }
 
             is DataState.Loading -> {
-                _uiState.value = QuizzUiState(
+                _uiState.value = QuizUiState(
                     questionId = null,
                     isLoading = true,
                     finishTheGame = _uiState.value.finishTheGame,
@@ -160,8 +162,8 @@ class QuizViewModel @Inject constructor(
         selectedOption?.let {
             viewModelScope.launch {
                 questionId?.let { questionId ->
-                    repository.sendSelectedOptions(
-                        idQuestion = questionId,
+                    repository.sendSelectedOption(
+                        questionId = questionId,
                         selectedOptionText = selectedOption.text
                     )
                         .collect(::getResultQuestion)
@@ -173,7 +175,7 @@ class QuizViewModel @Inject constructor(
         }
     }
 
-    private fun getResultQuestion(state: DataState<Result>) {
+    private fun getResultQuestion(state: DataState<ResultResponse>) {
         when (state) {
             is DataState.Data -> {
                 val disabledOptions = _uiState.value.options.map {
@@ -193,8 +195,8 @@ class QuizViewModel @Inject constructor(
                 )
 
                 if (state.data.result) {
-                    result++
-                    _uiState.value = _uiState.value.copy(scoreGame = result)
+                    resultGame++
+                    _uiState.value = _uiState.value.copy(scoreGame = resultGame)
                 }
             }
 

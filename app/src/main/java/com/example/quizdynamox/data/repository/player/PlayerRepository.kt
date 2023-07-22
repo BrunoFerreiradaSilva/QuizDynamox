@@ -5,6 +5,6 @@ import com.example.quizdynamox.model.entity.PlayerEntity
 import kotlinx.coroutines.flow.Flow
 
 interface PlayerRepository {
-    suspend fun insertPlayer(player: PlayerEntity)
+    suspend fun insertPlayer(playerEntity: PlayerEntity)
     fun getAllPlayers(): Flow<DataState<List<PlayerEntity>?>>
 }

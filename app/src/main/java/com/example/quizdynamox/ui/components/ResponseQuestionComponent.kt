@@ -2,7 +2,6 @@ package com.example.quizdynamox.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -42,9 +41,9 @@ fun ResponseQuestionComponent(isAnswerCorrect: Boolean) {
     } else {
         Icons.Default.Close
     }
-    val colorIcon = if (isAnswerCorrect){
+    val colorIcon = if (isAnswerCorrect) {
         Color.Green
-    }else{
+    } else {
         Color.Red
     }
 
@@ -61,7 +60,11 @@ fun ResponseQuestionComponent(isAnswerCorrect: Boolean) {
                 fontWeight = FontWeight.W500,
                 modifier = Modifier.padding(end = 4.dp)
             )
-            Icon(imageVector = icon, contentDescription = "icon response", tint = colorIcon)
+            Icon(
+                imageVector = icon,
+                contentDescription = stringResource(id = R.string.icon_result_answer_content),
+                tint = colorIcon
+            )
         }
 
     }

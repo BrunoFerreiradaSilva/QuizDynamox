@@ -3,6 +3,8 @@ package com.example.quizdynamox.ui.screens.endGame
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.quizdynamox.NAME_PLAYER_INTENT
+import com.example.quizdynamox.SCORE_PLAYER_INTENT
 import com.example.quizdynamox.data.repository.player.PlayerRepository
 import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.PlayerEntity
@@ -16,7 +18,7 @@ import javax.inject.Inject
 data class PlayerUiData(
     val playerName: String = "",
     val playerScore: Int = 0,
-    val allPlayers: List<PlayerEntity> = emptyList()
+    val allPlayerEntities: List<PlayerEntity> = emptyList()
 )
 
 @HiltViewModel
@@ -29,8 +31,8 @@ class EndGameViewModel @Inject constructor(
 
     val uiState = _uiState.asStateFlow()
 
-    private val nameUser: String = checkNotNull(savedStateHandle["nameUser"])
-    private val score: Int = checkNotNull(savedStateHandle["scoreGame"])
+    private val nameUser: String = checkNotNull(savedStateHandle[NAME_PLAYER_INTENT])
+    private val score: Int = checkNotNull(savedStateHandle[SCORE_PLAYER_INTENT])
 
     init {
         viewModelScope.launch {
@@ -51,7 +53,7 @@ class EndGameViewModel @Inject constructor(
             is DataState.Data -> {
                 state.data?.let {
                     _uiState.value = _uiState.value.copy(
-                        allPlayers = it
+                        allPlayerEntities = it
                     )
                 }
 
