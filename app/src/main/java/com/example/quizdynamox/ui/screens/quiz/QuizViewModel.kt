@@ -7,6 +7,7 @@ import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.Question
 import com.example.quizdynamox.model.entity.Result
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -25,7 +26,8 @@ data class QuizzUiState(
     val currentQuestion: Float = 0.1f,
     val finishTheGame: Boolean = false,
     val scoreGame: Int = 0,
-    val showMessageError: Boolean = false
+    val showMessageError: Boolean = false,
+    val tryAgain: Boolean = false
 )
 
 data class OptionUi(
@@ -62,6 +64,12 @@ class QuizViewModel @Inject constructor(
         }
     }
 
+    fun retryGetQuestion() {
+        viewModelScope.launch {
+            repository.getQuestion().collect(::handleGetQuestion)
+        }
+    }
+
     private fun updateProgress() {
         count += 0.1f
         _uiState.value =
@@ -78,24 +86,28 @@ class QuizViewModel @Inject constructor(
     private fun handleGetQuestion(state: DataState<Question>) {
         when (state) {
             is DataState.Data -> {
-                val optionsUi = state.data.options.mapIndexed { index, optionText ->
-                    OptionUi(
-                        isSelected = false,
-                        index = index,
-                        text = optionText
+                viewModelScope.launch {
+                    delay(300)
+
+                    val optionsUi = state.data.options.mapIndexed { index, optionText ->
+                        OptionUi(
+                            isSelected = false,
+                            index = index,
+                            text = optionText
+                        )
+                    }
+
+                    _uiState.value = QuizzUiState(
+                        questionId = state.data.id,
+                        isLoading = false,
+                        showData = true,
+                        statement = state.data.statement,
+                        options = optionsUi,
+                        currentQuestion = _uiState.value.currentQuestion,
+                        scoreGame = _uiState.value.scoreGame,
+                        showMessageError = _uiState.value.showMessageError
                     )
                 }
-
-                _uiState.value = QuizzUiState(
-                    questionId = state.data.id,
-                    isLoading = false,
-                    showData = true,
-                    statement = state.data.statement,
-                    options = optionsUi,
-                    currentQuestion = _uiState.value.currentQuestion,
-                    scoreGame = _uiState.value.scoreGame,
-                    showMessageError = _uiState.value.showMessageError
-                )
             }
 
             is DataState.Error -> {
@@ -105,7 +117,8 @@ class QuizViewModel @Inject constructor(
                         isLoading = false,
                         showError = true,
                         scoreGame = _uiState.value.scoreGame,
-                        showMessageError = _uiState.value.showMessageError
+                        showMessageError = _uiState.value.showMessageError,
+                        tryAgain = true
                     )
             }
 
@@ -157,7 +170,7 @@ class QuizViewModel @Inject constructor(
                 }
             }
             _uiState.value = _uiState.value.copy(showMessageError = false)
-        }?: run {
+        } ?: run {
             _uiState.value = _uiState.value.copy(showMessageError = true)
         }
     }

@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -20,7 +18,6 @@ import com.example.quizdynamox.navigation.Screens
 import com.example.quizdynamox.ui.screens.endGame.EndGameScreen
 import com.example.quizdynamox.ui.screens.home.HomeScreen
 import com.example.quizdynamox.ui.screens.quiz.QuizScreen
-import com.example.quizdynamox.ui.splash.SplashScreen
 import com.example.quizdynamox.ui.theme.QuizDynamoxTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -47,11 +44,6 @@ class MainActivity : ComponentActivity() {
 fun Navigation(navHostController: NavHostController) {
     NavHost(navController = navHostController, startDestination = Screens.InitialScreen.route) {
         composable(
-            route = Screens.SplashScreen.route
-        ) {
-            SplashScreen(navHostController)
-        }
-        composable(
             route = Screens.InitialScreen.route
         ) {
             HomeScreen(onQuizScreen = {
@@ -61,7 +53,7 @@ fun Navigation(navHostController: NavHostController) {
         composable(
             route = "${Screens.QuizScreen.route}/{name}",
             arguments = listOf(navArgument("name") { type = NavType.StringType })
-        ) {navBack ->
+        ) { navBack ->
             val name = navBack.arguments?.getString("name")
             QuizScreen(onEndGameScreen = {
                 navHostController.navigate(
@@ -74,7 +66,7 @@ fun Navigation(navHostController: NavHostController) {
             arguments = listOf(navArgument("nameUser") { type = NavType.StringType },
                 navArgument("scoreGame") { type = NavType.IntType }
             )
-        ) {navBack ->
+        ) { navBack ->
             EndGameScreen(onHomeScreen = {
                 navHostController.navigate(Screens.InitialScreen.route)
             })

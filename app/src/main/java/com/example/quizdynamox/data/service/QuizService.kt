@@ -13,5 +13,8 @@ interface QuizService {
     suspend fun getQuestions(): QuestionDTO
 
     @POST("/answer?")
-    suspend fun sendQuestion(@Query("questionId") questionId: Int, @Body answerRequest: AnswerRequest): Result
+    suspend fun sendQuestion(
+        @Query("questionId") questionId: Int,
+        @Body answerRequest: AnswerRequest
+    ): Result
 }

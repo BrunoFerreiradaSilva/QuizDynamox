@@ -52,7 +52,7 @@ fun HomeScreen(onQuizScreen: (String) -> Unit) {
         NameForGame(nameUser, state.fieldValid)
 
         state.showErrorName?.let {
-            if (it){
+            if (it) {
                 TextErrorComponent(
                     messageError = stringResource(id = R.string.error_insert_name)
                 )
@@ -60,7 +60,7 @@ fun HomeScreen(onQuizScreen: (String) -> Unit) {
         }
 
 
-        ButtonComponent(labelText = "Start Quiz") {
+        ButtonComponent(labelText = stringResource(id = R.string.start_quiz)) {
             viewModel.validateName(name = nameUser.value.text) { invalid ->
                 if (!invalid) {
                     onQuizScreen(nameUser.value.text)
@@ -80,13 +80,15 @@ private fun NameForGame(
         modifier = Modifier.fillMaxWidth(),
         value = nameUser.value,
         onValueChange = { nameUser.value = it },
-        label = { Text(text = "Nome ou Apelido") },
+        label = { Text(text = stringResource(id = R.string.name_hint), color = MaterialTheme.colorScheme.onTertiary) },
         shape = ShapeDefaults.Medium,
         colors = TextFieldDefaults.outlinedTextFieldColors(
+            textColor = MaterialTheme.colorScheme.onTertiary,
             focusedBorderColor = MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = MaterialTheme.colorScheme.primary
         ),
         isError = isError,
-        maxLines = 1
+        maxLines = 1,
+        singleLine = true
     )
 }

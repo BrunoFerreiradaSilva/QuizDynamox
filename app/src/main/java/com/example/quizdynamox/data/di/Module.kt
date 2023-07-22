@@ -57,5 +57,4 @@ object Module {
             .build()
             .create(QuizService::class.java)
     }
-
 }

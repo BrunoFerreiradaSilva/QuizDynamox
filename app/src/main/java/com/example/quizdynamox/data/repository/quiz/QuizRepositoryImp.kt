@@ -13,26 +13,35 @@ import javax.inject.Inject
 class QuizRepositoryImp @Inject constructor(private val quizService: QuizService) : QuizRepository {
     override fun getQuestion(): Flow<DataState<Question>> = flow {
         emit(DataState.Loading(LoadingState.Loading))
-        val questionDto = quizService.getQuestions()
-        val question = Question(
-            id = questionDto.id,
-            statement = questionDto.statement,
-            options = questionDto.options
-        )
-
-        emit(DataState.Data(data = question))
+        try {
+            val questionDto = quizService.getQuestions()
+            val question = Question(
+                id = questionDto.id,
+                statement = questionDto.statement,
+                options = questionDto.options
+            )
+            emit(DataState.Data(data = question))
+        } catch (error: Exception) {
+            emit(DataState.Error(error = error))
+        }
     }
 
     override fun sendSelectedOptions(
         idQuestion: Int,
         selectedOptionText: String
-    ): Flow<DataState<Result>> = flow{
+    ): Flow<DataState<Result>> = flow {
         emit(DataState.Loading(LoadingState.Loading))
-        val answerRequest = AnswerRequest(selectedOptionText)
-        val result = Result(
-            result = quizService.sendQuestion(idQuestion, answerRequest).result
-        )
+        try {
+            val answerRequest = AnswerRequest(selectedOptionText)
+            val result = Result(
+                result = quizService.sendQuestion(idQuestion, answerRequest).result
+            )
 
-        emit(DataState.Data(data = result))
+            emit(DataState.Data(data = result))
+        } catch (error: Exception) {
+
+            emit(DataState.Error(error = error))
+        }
+
     }
 }

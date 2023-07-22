@@ -1,8 +1,14 @@
 <resources>
     <string name="app_name">QuizDynamox</string>
     <string name="question">Pergunta</string>
+    <string name="answer">Resposta</string>
     <string name="result_error">Resposta Errada</string>
     <string name="result_success">Resposta Correta</string>
     <string name="not_selected_answer">Selecione uma resposta !</string>
     <string name="error_insert_name">Digite um nome ou apelido</string>
+    <string name="send_answer">Enviar</string>
+    <string name="next_question">Próxima</string>
+    <string name="progress">%1$s/10</string>
+    <string name="start_quiz">Iniciar</string>
+    <string name="name_hint">Nome ou apelido</string>
 </resources>

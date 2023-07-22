@@ -15,20 +15,20 @@ import androidx.compose.ui.unit.dp
 import com.example.quizdynamox.R
 
 @Composable
-fun ResponseQuestionComponent(isAnswerCorrect:Boolean) {
+fun ResponseQuestionComponent(isAnswerCorrect: Boolean) {
     val message = if (isAnswerCorrect) {
         stringResource(id = R.string.result_success)
-    }else{
+    } else {
         stringResource(id = R.string.result_error)
     }
-    val color = if (isAnswerCorrect){
+    val color = if (isAnswerCorrect) {
         Color.Green
-    }else{
+    } else {
         Color.Red
     }
-    val textColor = if(isAnswerCorrect){
+    val textColor = if (isAnswerCorrect) {
         Color.Black
-    }else{
+    } else {
         Color.White
     }
     Box(modifier = Modifier.clip(ShapeDefaults.Medium)) {

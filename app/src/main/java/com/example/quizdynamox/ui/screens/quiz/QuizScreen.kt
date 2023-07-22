@@ -36,6 +36,7 @@ import com.example.quizdynamox.R
 import com.example.quizdynamox.ui.components.ButtonComponent
 import com.example.quizdynamox.ui.components.ResponseQuestionComponent
 import com.example.quizdynamox.ui.components.TextErrorComponent
+import com.example.quizdynamox.ui.screens.error.ErrorScreen
 
 
 @Composable
@@ -59,9 +60,10 @@ fun QuizScreen(onEndGameScreen: (Int) -> Unit) {
     }
 
     if (state.showError) {
-
+        ErrorScreen(state.tryAgain) {
+            viewModel.retryGetQuestion()
+        }
     }
-
 
     if (state.showData) {
         Column(
@@ -106,15 +108,13 @@ private fun StateButtons(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
-        if (showMessageError){
+        if (showMessageError) {
             TextErrorComponent(
                 messageError = stringResource(id = R.string.not_selected_answer)
             )
         }
-
         if (showSendButton) {
-            ButtonComponent(labelText = "Send answer") {
+            ButtonComponent(labelText = stringResource(id = R.string.send_answer)) {
                 sendAnswer()
             }
         }
@@ -123,11 +123,12 @@ private fun StateButtons(
             showResult?.let { isAnswerCorrect ->
                 ResponseQuestionComponent(isAnswerCorrect)
             }
-            ButtonComponent(labelText = "Next answer") {
+            ButtonComponent(labelText = stringResource(id = R.string.next_question)) {
                 getNextQuestion()
             }
         }
     }
+
 }
 
 @Composable
@@ -142,7 +143,7 @@ private fun Options(
             .padding(8.dp)
     ) {
         Text(
-            text = "Resposta",
+            text = stringResource(id = R.string.answer),
             modifier = Modifier.padding(vertical = 10.dp),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
@@ -177,29 +178,30 @@ private fun Question(statement: String, currentQuestion: Float) {
             .padding(bottom = 8.dp)
     ) {
         Text(
-            text = "Pergunta",
+            text = stringResource(id = R.string.question),
             modifier = Modifier.fillMaxWidth(),
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             fontWeight = FontWeight.Bold,
-
-            )
+            color = MaterialTheme.colorScheme.surface
+        )
 
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
         Text(
             text = statement,
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
+            color = MaterialTheme.colorScheme.surface
         )
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
-        val currentQuestionInt = (currentQuestion * 10).toInt()
         Text(
-            text = "${currentQuestionInt}/10",
+            text = stringResource(id = R.string.progress, (currentQuestion * 10).toInt()),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.surface
         )
 
         LinearProgressIndicator(

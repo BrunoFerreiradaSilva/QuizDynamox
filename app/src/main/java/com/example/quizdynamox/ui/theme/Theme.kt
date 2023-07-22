@@ -2,8 +2,10 @@ package com.example.quizdynamox.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import android.view.View
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -19,8 +21,11 @@ private val DarkColorScheme = darkColorScheme(
     primary = wine80,
     secondary = wine90,
     tertiary = wine100,
-    surface = black,
-    onSurface = wine50
+    surface = white,
+    onSurface = black,
+    onTertiary = white,
+    tertiaryContainer = wine70,
+    onTertiaryContainer = wine50
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -28,7 +33,10 @@ private val LightColorScheme = lightColorScheme(
     secondary = wine30,
     tertiary = wine40,
     surface = white,
-    onSurface = wine110
+    onSurface = wine110,
+    onTertiary = black,
+    tertiaryContainer = wine70,
+    onTertiaryContainer = wine50
 )
 
 @Composable
@@ -42,6 +50,7 @@ fun QuizDynamoxTheme(
         dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+
         }
 
         darkTheme -> DarkColorScheme
