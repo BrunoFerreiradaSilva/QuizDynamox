@@ -72,7 +72,7 @@ fun HomeScreen(navigateToQuizScreen: (String) -> Unit) {
                 focusedBorderColor = MaterialTheme.colorScheme.primary,
                 unfocusedBorderColor = MaterialTheme.colorScheme.primary
             ),
-            isError = state.fieldValid,
+            isError = state.isErrorName,
             maxLines = 1,
             singleLine = true
         )
@@ -87,13 +87,12 @@ fun HomeScreen(navigateToQuizScreen: (String) -> Unit) {
         }
 
         ButtonComponent(labelText = stringResource(id = R.string.start_quiz)) {
-            viewModel.validateName(name = nameUser.value.text)
-
-            if (state.fieldValid) {
-                navigateToQuizScreen(nameUser.value.text)
+            viewModel.validateName(name = nameUser.value.text){
+                if (it) {
+                    navigateToQuizScreen(nameUser.value.text)
+                }
             }
         }
-
     }
 }
 

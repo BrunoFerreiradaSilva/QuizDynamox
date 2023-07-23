@@ -8,8 +8,7 @@ import javax.inject.Inject
 
 data class StartQuizUiState(
     val nameUser: String? = null,
-    val isErrorName:Boolean = false,
-    val fieldValid: Boolean = false
+    val isErrorName: Boolean = false
 )
 
 @HiltViewModel
@@ -21,13 +20,15 @@ class StartQuizViewModel @Inject constructor() : ViewModel() {
     val uiState = _uiState.asStateFlow()
 
 
-    fun validateName(name: String) {
+    fun validateName(name: String, isValidField: (Boolean) -> Unit) {
         val invalidName = name.isEmpty() && name.isBlank()
-        _uiState.value =
-            _uiState.value.copy(
-                nameUser = name,
-                isErrorName = invalidName,
-                fieldValid = invalidName
-            )
+        val validField = !invalidName
+
+        isValidField(validField)
+
+        _uiState.value = _uiState.value.copy(
+            nameUser = name,
+            isErrorName = invalidName
+        )
     }
 }
