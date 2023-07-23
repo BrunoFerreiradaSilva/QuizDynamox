@@ -46,7 +46,7 @@ fun Navigation(navHostController: NavHostController) {
         composable(
             route = Screens.InitialScreen.route
         ) {
-            HomeScreen(onQuizScreen = {
+            HomeScreen(navigateToQuizScreen = {
                 navHostController.navigate("${Screens.QuizScreen.route}/$it")
             })
         }

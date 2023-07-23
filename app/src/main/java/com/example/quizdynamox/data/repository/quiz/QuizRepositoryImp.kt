@@ -6,6 +6,7 @@ import com.example.quizdynamox.helpers.LoadingState
 import com.example.quizdynamox.model.entity.AnswerRequest
 import com.example.quizdynamox.model.entity.Question
 import com.example.quizdynamox.model.entity.ResultResponse
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject

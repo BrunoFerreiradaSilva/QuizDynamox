@@ -10,5 +10,3 @@ const val END_GAME_ROUTE = "result_screen"
 
 const val NAME_PLAYER_INTENT = "nameUser"
 const val SCORE_PLAYER_INTENT = "scoreGame"
-
-const val NAME_INTENT = "name"

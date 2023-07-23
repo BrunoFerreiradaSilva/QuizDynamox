@@ -23,7 +23,7 @@ import com.example.quizdynamox.R
 import com.example.quizdynamox.ui.components.ButtonComponent
 
 @Composable
-fun ErrorScreen(error: Boolean, tryAgain: () -> Unit) {
+fun ErrorScreen(tryAgain: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -48,9 +48,7 @@ fun ErrorScreen(error: Boolean, tryAgain: () -> Unit) {
         Spacer(modifier = Modifier.padding(vertical = 20.dp))
 
         ButtonComponent(labelText = stringResource(id = R.string.try_again_text_button)) {
-            if (error) {
-                tryAgain()
-            }
+            tryAgain()
         }
     }
 

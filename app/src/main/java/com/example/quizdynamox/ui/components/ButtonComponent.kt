@@ -9,6 +9,7 @@ import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -26,4 +27,10 @@ fun ButtonComponent(labelText: String, onClick: () -> Unit) {
     ) {
         Text(text = labelText, color = MaterialTheme.colorScheme.surface)
     }
+}
+
+@Preview
+@Composable
+fun PreviewButtonComponent() {
+    ButtonComponent(labelText = "Exemplo", onClick = {})
 }

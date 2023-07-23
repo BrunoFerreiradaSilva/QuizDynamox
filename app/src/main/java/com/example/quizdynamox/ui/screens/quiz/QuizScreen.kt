@@ -3,7 +3,6 @@ package com.example.quizdynamox.ui.screens.quiz
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,14 +15,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -38,10 +35,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.quizdynamox.R
 import com.example.quizdynamox.ui.components.ButtonComponent
 import com.example.quizdynamox.ui.components.ResponseQuestionComponent
-import com.example.quizdynamox.ui.components.TextErrorComponent
 import com.example.quizdynamox.ui.screens.error.ErrorScreen
 import com.example.quizdynamox.ui.screens.load.LoadingScreen
-import kotlinx.coroutines.delay
 
 
 @Composable
@@ -52,7 +47,7 @@ fun QuizScreen(onEndGameScreen: (Int) -> Unit) {
     BackHandler { }
 
     if (state.finishTheGame) {
-        onEndGameScreen(state.scoreGame)
+        onEndGameScreen(state.score)
     }
 
     if (state.isLoading) {
@@ -60,7 +55,7 @@ fun QuizScreen(onEndGameScreen: (Int) -> Unit) {
     }
 
     if (state.showError) {
-        ErrorScreen(state.tryAgain) {
+        ErrorScreen() {
             viewModel.retryGetQuestion()
         }
     }
@@ -72,7 +67,7 @@ fun QuizScreen(onEndGameScreen: (Int) -> Unit) {
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Question(state.statement, state.currentQuestion)
+            Question(state.statement, state.progressCount, state.currentProgress)
 
             Options(state.options) { index: Int ->
                 viewModel.selectOptions(index)
@@ -107,8 +102,11 @@ private fun StateButtons(
 
         Spacer(modifier = Modifier.padding(vertical = 12.dp))
         if (showMessageError) {
-            TextErrorComponent(
-                messageError = stringResource(id = R.string.not_selected_answer)
+            Text(
+                text = stringResource(id = R.string.not_selected_answer),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(top = 8.dp)
             )
         }
         if (showSendButton) {
@@ -172,7 +170,7 @@ private fun Options(
 }
 
 @Composable
-private fun Question(statement: String, currentQuestion: Float) {
+private fun Question(statement: String, progressCount: Int, progress:Float) {
     Card(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
         modifier = Modifier
@@ -199,7 +197,7 @@ private fun Question(statement: String, currentQuestion: Float) {
         Spacer(modifier = Modifier.padding(vertical = 10.dp))
 
         Text(
-            text = stringResource(id = R.string.progress, (currentQuestion * 10).toInt()),
+            text = stringResource(id = R.string.progress, progressCount,MAX_QUESTIONS),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp),
@@ -211,7 +209,7 @@ private fun Question(statement: String, currentQuestion: Float) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            progress = currentQuestion,
+            progress = progress,
             color = Color.White,
             trackColor = Color.Black
         )

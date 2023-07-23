@@ -43,24 +43,15 @@ class EndGameViewModel @Inject constructor(
 
     fun insertPlayerRoom() {
         viewModelScope.launch {
-            delay(300)
             repository.insertPlayer(PlayerEntity(name = nameUser, score = score))
         }
     }
 
-    private fun handleGetAllPlayers(state: DataState<List<PlayerEntity>?>) {
-        when (state) {
-            is DataState.Data -> {
-                state.data?.let {
-                    _uiState.value = _uiState.value.copy(
-                        allPlayerEntities = it
-                    )
-                }
-
-            }
-
-            is DataState.Error -> {}
-            is DataState.Loading -> {}
+    private fun handleGetAllPlayers(state: List<PlayerEntity>?) {
+        state?.let {
+            _uiState.value = _uiState.value.copy(
+                allPlayerEntities = it
+            )
         }
     }
 }

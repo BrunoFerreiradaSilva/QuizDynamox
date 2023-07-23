@@ -1,7 +1,5 @@
 package com.example.quizdynamox.ui.screens.quiz
 
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Brush
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quizdynamox.data.repository.quiz.QuizRepository
@@ -9,7 +7,6 @@ import com.example.quizdynamox.helpers.DataState
 import com.example.quizdynamox.model.entity.Question
 import com.example.quizdynamox.model.entity.ResultResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -25,11 +22,12 @@ data class QuizUiState(
     val showSendButton: Boolean = true,
     val showNextButton: Boolean = false,
     val showResult: Boolean? = null,
-    val currentQuestion: Float = 0.1f,
     val finishTheGame: Boolean = false,
-    val scoreGame: Int = 0,
     val showMessageError: Boolean = false,
-    val tryAgain: Boolean = false
+    val tryAgain: Boolean = false,
+    val progressCount: Int = 0,
+    val currentProgress: Float = progressCount.toFloat() / MAX_QUESTIONS,
+    val score: Int = 0
 )
 
 data class OptionUi(
@@ -38,6 +36,8 @@ data class OptionUi(
     val index: Int = -1,
     val isEnabled: Boolean = true
 )
+
+const val MAX_QUESTIONS = 10
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
@@ -49,9 +49,6 @@ class QuizViewModel @Inject constructor(
 
     val uiState = _uiState.asStateFlow()
 
-    private var resultGame = 0
-    private var progressCount = 0.1f
-
     init {
         viewModelScope.launch {
             repository.getQuestion().collect(::handleGetQuestion)
@@ -62,7 +59,6 @@ class QuizViewModel @Inject constructor(
         viewModelScope.launch {
             isFinishGame()
             repository.getQuestion().collect(::handleGetQuestion)
-            updateProgress()
         }
     }
 
@@ -73,15 +69,15 @@ class QuizViewModel @Inject constructor(
     }
 
     private fun updateProgress() {
-        progressCount += 0.1f
-        _uiState.value =
-            _uiState.value.copy(currentQuestion = progressCount)
+        val updateProgressCount = _uiState.value.progressCount + 1
+        _uiState.value = _uiState.value.copy(
+            progressCount = updateProgressCount,
+            currentProgress = updateProgressCount.toFloat() / MAX_QUESTIONS
+        )
     }
 
     private fun isFinishGame() {
-        val countQuestions = (progressCount * 10).toInt()
-        val finishTheGame = countQuestions >= 10
-
+        val finishTheGame = _uiState.value.progressCount >= MAX_QUESTIONS
         _uiState.value = _uiState.value.copy(finishTheGame = finishTheGame)
     }
 
@@ -89,6 +85,7 @@ class QuizViewModel @Inject constructor(
         when (state) {
             is DataState.Data -> {
                 viewModelScope.launch {
+
                     val optionsUi = state.data.options.mapIndexed { index, optionText ->
                         OptionUi(
                             isSelected = false,
@@ -103,11 +100,13 @@ class QuizViewModel @Inject constructor(
                         showData = true,
                         statement = state.data.statement,
                         options = optionsUi,
-                        currentQuestion = _uiState.value.currentQuestion,
-                        scoreGame = _uiState.value.scoreGame,
-                        showMessageError = _uiState.value.showMessageError
+                        showMessageError = _uiState.value.showMessageError,
+                        progressCount = _uiState.value.progressCount,
+                        currentProgress = _uiState.value.currentProgress,
+                        score = _uiState.value.score
                     )
                 }
+                updateProgress()
             }
 
             is DataState.Error -> {
@@ -116,9 +115,11 @@ class QuizViewModel @Inject constructor(
                         questionId = null,
                         isLoading = false,
                         showError = true,
-                        scoreGame = _uiState.value.scoreGame,
                         showMessageError = _uiState.value.showMessageError,
-                        tryAgain = true
+                        tryAgain = true,
+                        progressCount = _uiState.value.progressCount,
+                        currentProgress = _uiState.value.currentProgress,
+                        score = _uiState.value.score
                     )
             }
 
@@ -127,8 +128,10 @@ class QuizViewModel @Inject constructor(
                     questionId = null,
                     isLoading = true,
                     finishTheGame = _uiState.value.finishTheGame,
-                    scoreGame = _uiState.value.scoreGame,
-                    showMessageError = _uiState.value.showMessageError
+                    showMessageError = _uiState.value.showMessageError,
+                    progressCount = _uiState.value.progressCount,
+                    currentProgress = _uiState.value.currentProgress,
+                    score = _uiState.value.score
                 )
             }
         }
@@ -187,17 +190,16 @@ class QuizViewModel @Inject constructor(
                     )
                 }
 
+                val score =
+                    if (state.data.result) _uiState.value.score + 1 else _uiState.value.score
+
                 _uiState.value = _uiState.value.copy(
                     options = disabledOptions,
                     showNextButton = true,
                     showSendButton = false,
-                    showResult = state.data.result
+                    showResult = state.data.result,
+                    score = score
                 )
-
-                if (state.data.result) {
-                    resultGame++
-                    _uiState.value = _uiState.value.copy(scoreGame = resultGame)
-                }
             }
 
             is DataState.Error -> {}

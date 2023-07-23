@@ -6,31 +6,28 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-data class HomeUiState(
+data class StartQuizUiState(
     val nameUser: String? = null,
-    val showErrorName: Boolean? = null,
+    val isErrorName:Boolean = false,
     val fieldValid: Boolean = false
 )
 
 @HiltViewModel
-class HomeViewModel @Inject constructor() : ViewModel() {
+class StartQuizViewModel @Inject constructor() : ViewModel() {
 
-    private val _uiState: MutableStateFlow<HomeUiState> =
-        MutableStateFlow(HomeUiState())
+    private val _uiState: MutableStateFlow<StartQuizUiState> =
+        MutableStateFlow(StartQuizUiState())
 
     val uiState = _uiState.asStateFlow()
 
 
-    fun validateName(name: String, isInvalid: (Boolean) -> Unit) {
+    fun validateName(name: String) {
         val invalidName = name.isEmpty() && name.isBlank()
-
         _uiState.value =
             _uiState.value.copy(
                 nameUser = name,
-                showErrorName = invalidName,
+                isErrorName = invalidName,
                 fieldValid = invalidName
             )
-
-        isInvalid(invalidName)
     }
 }

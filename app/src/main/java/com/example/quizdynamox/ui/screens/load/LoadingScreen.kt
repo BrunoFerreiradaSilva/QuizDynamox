@@ -40,15 +40,15 @@ fun LoadingScreen() {
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Question()
+        QuestionLoading()
 
-        Options()
+        OptionsLoading()
 
     }
 }
 
 @Composable
-private fun Options() {
+private fun OptionsLoading() {
     Spacer(modifier = Modifier.padding(top = 12.dp))
     Column(
         modifier = Modifier
@@ -69,7 +69,7 @@ private fun Options() {
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
                 .clip(ShapeDefaults.Small)
                 .shimmer()
-                .background(Color.DarkGray)
+                .background(Color.Gray)
         )
 
         Spacer(
@@ -79,7 +79,7 @@ private fun Options() {
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
                 .clip(ShapeDefaults.Small)
                 .shimmer()
-                .background(Color.DarkGray)
+                .background(Color.Gray)
         )
         Spacer(
             modifier = Modifier
@@ -88,7 +88,7 @@ private fun Options() {
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
                 .clip(ShapeDefaults.Small)
                 .shimmer()
-                .background(Color.DarkGray)
+                .background(Color.Gray)
         )
         Spacer(
             modifier = Modifier
@@ -97,7 +97,7 @@ private fun Options() {
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
                 .clip(ShapeDefaults.Small)
                 .shimmer()
-                .background(Color.DarkGray)
+                .background(Color.Gray)
         )
         Spacer(
             modifier = Modifier
@@ -106,7 +106,7 @@ private fun Options() {
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
                 .clip(ShapeDefaults.Small)
                 .shimmer()
-                .background(Color.DarkGray)
+                .background(Color.Gray)
         )
 
         Spacer(modifier = Modifier.padding(40.dp))
@@ -119,13 +119,13 @@ private fun Options() {
                 .padding(top = 20.dp)
                 .clip(ShapeDefaults.Small)
                 .shimmer()
-                .background(Color.DarkGray)
+                .background(Color.Gray)
         )
     }
 }
 
 @Composable
-private fun Question() {
+private fun QuestionLoading() {
     Card(
         colors = CardDefaults.cardColors(MaterialTheme.colorScheme.primary),
         modifier = Modifier
@@ -150,16 +150,27 @@ private fun Question() {
                 .size(50.dp)
                 .padding(start = 12.dp, end = 12.dp, top = 10.dp)
                 .shimmer()
-                .background(Color.DarkGray)
+                .background(Color.Gray)
+        )
+
+        Spacer(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .width(50.dp)
+                .size(20.dp)
+                .padding(start = 12.dp, end = 12.dp, top = 10.dp)
+                .shimmer()
+                .background(Color.Gray)
         )
 
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(40.dp)
-                .padding(start = 12.dp, end = 12.dp, top = 10.dp)
+                .size(20.dp)
+                .padding(start = 12.dp, end = 12.dp, top = 6.dp)
+                .clip(ShapeDefaults.ExtraLarge)
                 .shimmer()
-                .background(Color.DarkGray)
+                .background(Color.Gray)
         )
 
 

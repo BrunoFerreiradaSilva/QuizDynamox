@@ -9,7 +9,7 @@ import java.util.*
 @Dao
 interface PlayerDAO {
 
-    @Query("SELECT * from `playerentity`")
+    @Query("SELECT * FROM `playerentity`")
     fun getAllPlayers(): Flow<List<PlayerEntity>?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
