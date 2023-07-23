@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
@@ -57,12 +59,57 @@ private fun Options() {
             fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold
         )
-        
+
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(450.dp)
-                .padding(horizontal = 12.dp)
+                .size(60.dp)
+                .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .shimmer()
+                .background(Color.DarkGray)
+        )
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(60.dp)
+                .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .shimmer()
+                .background(Color.DarkGray)
+        )
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(60.dp)
+                .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .shimmer()
+                .background(Color.DarkGray)
+        )
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(60.dp)
+                .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .shimmer()
+                .background(Color.DarkGray)
+        )
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(60.dp)
+                .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .shimmer()
+                .background(Color.DarkGray)
+        )
+
+        Spacer(modifier = Modifier.padding(40.dp))
+
+        Spacer(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .width(90.dp)
+                .height(60.dp)
+                .padding(top = 20.dp)
                 .shimmer()
                 .background(Color.DarkGray)
         )
@@ -92,8 +139,17 @@ private fun Question() {
         Spacer(
             modifier = Modifier
                 .fillMaxWidth()
-                .size(90.dp)
-                .padding(horizontal = 12.dp)
+                .size(50.dp)
+                .padding(start = 12.dp, end = 12.dp, top = 10.dp)
+                .shimmer()
+                .background(Color.DarkGray)
+        )
+
+        Spacer(
+            modifier = Modifier
+                .fillMaxWidth()
+                .size(40.dp)
+                .padding(start = 12.dp, end = 12.dp, top = 10.dp)
                 .shimmer()
                 .background(Color.DarkGray)
         )
