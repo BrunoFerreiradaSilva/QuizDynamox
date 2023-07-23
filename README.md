@@ -1,6 +1,6 @@
 # QuizDynamox
 
-##Modo de usar o app
+## Modo de usar o app
 Inserir o nome para iniciar o jogo.
 
 O jogo consiste em 5 perguntas de múltipla escolha, ao enviar a resposta você terá um feedback visual se acertou o não a resposta, após enviar a resposta, não será possível modifica-la.
@@ -9,7 +9,7 @@ Ao final de 10 perguntas respondidas será mostrado sua pontuação coma opção
 
 
 
-##Tecnologias utilizadas
+## Tecnologias utilizadas
 
  O app foi desenvolvido usando princípios de Clean Architecture, o domain layer não foi usado por se tratar de uma aplicação de escopo pequeno.
 
