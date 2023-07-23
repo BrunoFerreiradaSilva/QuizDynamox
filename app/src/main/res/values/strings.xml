@@ -20,4 +20,6 @@
     <string name="icon_error_request">Icone de error na request</string>
     <string name="text_error_request">Não foi possivel carregar as perguntas</string>
     <string name="try_again_text_button">Tentar Novamente</string>
+    <string name="apresentation_app">QuizDynamox</string>
+    <string name="content_image_logo">Logo app</string>
 </resources>
