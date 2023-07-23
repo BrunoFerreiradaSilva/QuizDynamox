@@ -15,10 +15,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -65,6 +67,7 @@ private fun Options() {
                 .fillMaxWidth()
                 .size(60.dp)
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .clip(ShapeDefaults.Small)
                 .shimmer()
                 .background(Color.DarkGray)
         )
@@ -74,6 +77,7 @@ private fun Options() {
                 .fillMaxWidth()
                 .size(60.dp)
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .clip(ShapeDefaults.Small)
                 .shimmer()
                 .background(Color.DarkGray)
         )
@@ -82,6 +86,7 @@ private fun Options() {
                 .fillMaxWidth()
                 .size(60.dp)
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .clip(ShapeDefaults.Small)
                 .shimmer()
                 .background(Color.DarkGray)
         )
@@ -90,6 +95,7 @@ private fun Options() {
                 .fillMaxWidth()
                 .size(60.dp)
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .clip(ShapeDefaults.Small)
                 .shimmer()
                 .background(Color.DarkGray)
         )
@@ -98,6 +104,7 @@ private fun Options() {
                 .fillMaxWidth()
                 .size(60.dp)
                 .padding(start = 12.dp, end = 12.dp, bottom = 10.dp)
+                .clip(ShapeDefaults.Small)
                 .shimmer()
                 .background(Color.DarkGray)
         )
@@ -110,6 +117,7 @@ private fun Options() {
                 .width(90.dp)
                 .height(60.dp)
                 .padding(top = 20.dp)
+                .clip(ShapeDefaults.Small)
                 .shimmer()
                 .background(Color.DarkGray)
         )
