@@ -22,3 +22,10 @@ Para envio de informações entre camadas foi usado o Flow, a solução de progr
 A camada de UI foi 100% desenvolvida em compose, e para navegação entre telas o compose navigation.
 
 A dispobilização das dependências entre camadas foi feita via injeção de dependência usando HILT.
+
+
+## Video de apresentação 
+
+https://github.com/BrunoFerreiradaSilva/QuizDynamox/assets/31040011/2b5d6236-e5c8-4c49-a536-9ca7e9a5a8d1 
+
+https://github.com/BrunoFerreiradaSilva/QuizDynamox/assets/31040011/de50c1b8-0255-4425-a19d-0af3ed115a35
